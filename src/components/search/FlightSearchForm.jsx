@@ -22,22 +22,22 @@ const FlightSearchForm = () => {
     <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg">
       <SearchInput 
         icon={<FiMapPin className="text-brand-primary" />} 
-        label="From - To" 
+        label="Từ - Đến" 
         value="Lahore - Karachi" 
       />
       <SearchInput 
         icon={<FiRepeat className="text-brand-primary" />} 
-        label="Trip" 
+        label="Chuyến" 
         value="Return" 
       />
       <SearchInput 
         icon={<FiCalendar className="text-brand-primary" />} 
-        label="Depart - Return" 
+        label="Ngày đi - Ngày về" 
         value="07 Nov 22 - 13 Nov 22" 
       />
       <SearchInput 
         icon={<FiUsers className="text-brand-primary" />} 
-        label="Passenger - Class" 
+        label="Hành khách - Hạng ghế" 
         value="1 Passenger, Economy" 
       />
     </div>

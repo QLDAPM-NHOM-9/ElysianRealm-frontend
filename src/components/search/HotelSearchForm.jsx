@@ -22,22 +22,22 @@ const HotelSearchForm = () => {
     <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg">
       <SearchInput 
         icon={<FiMapPin className="text-brand-primary" />} 
-        label="Enter Destination" 
+        label="Điểm đến" 
         value="Istanbul, Turkey" 
       />
       <SearchInput 
         icon={<FiCalendar className="text-brand-primary" />} 
-        label="Check In" 
+        label="Nhập phòng" 
         value="Fri 12/2" 
       />
       <SearchInput 
         icon={<FiCalendar className="text-brand-primary" />} 
-        label="Check Out" 
+        label="Trả phòng" 
         value="Sun 12/4" 
       />
       <SearchInput 
         icon={<FiUsers className="text-brand-primary" />} 
-        label="Rooms & Guests" 
+        label="Phòng và khách" 
         value="1 Room, 2 Guests" 
       />
     </div>

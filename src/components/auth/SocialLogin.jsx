@@ -14,7 +14,7 @@ const SocialLogin = () => {
           <span className="w-full border-t border-border-primary" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-bg-primary px-4 text-text-secondary">Or login with</span>
+          <span className="bg-bg-primary px-4 text-text-secondary">Hoặc đăng nhập với</span>
         </div>
       </div>
 

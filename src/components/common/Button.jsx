@@ -9,7 +9,7 @@ const Button = ({
 }) => {
   
   // 1. Thêm 'flex', 'items-center'. Xóa padding khỏi base.
-  const baseStyle = "flex items-center rounded-lg font-semibold shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer";
+  const baseStyle = "justify-center flex items-center rounded-lg font-semibold shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer";
 
   // 2. Quyết định padding VÀ căn chỉnh dựa trên prop
   const dynamicStyle = isIconOnly 

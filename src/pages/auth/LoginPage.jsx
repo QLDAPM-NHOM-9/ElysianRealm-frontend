@@ -1,70 +1,113 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SocialLogin from '../../components/auth/SocialLogin.jsx';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { useAuth } from '../../contexts/AuthContext.jsx';
+import Button from '../../components/common/Button.jsx';
+import Input from '../../components/common/Input.jsx';
+import Checkbox from '../../components/common/Checkbox.jsx';
+import Spinner from '../../components/common/Spinner.jsx';
 
 const LoginPage = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  // --- 1. SỬ DỤNG useState ĐỂ KIỂM SOÁT FORM ---
+  // (Giả lập dữ liệu đã điền sẵn từ design)
+  const [email, setEmail] = useState('john.doe@gmail.com');
+  const [password, setPassword] = useState('12345678');
   const [showPassword, setShowPassword] = useState(false);
+  
+  // --- 2. QUẢN LÝ TRẠNG THÁI LOGIC ---
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(''); // Để lưu thông báo lỗi
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isLoading) return; // Ngăn double-click
+
+    setError(''); // Xóa lỗi cũ
+    setIsLoading(true); // Bắt đầu loading
+
+    // --- 3. GIẢ LẬP VIỆC GỌI API (MOCK API CALL) ---
+    setTimeout(() => {
+      setIsLoading(false); // Kết thúc loading
+      
+      // Giả lập logic xác thực
+      if (email === 'john.doe@gmail.com' && password === '12345678') {
+        // ĐÚNG: Gọi login từ Context và điều hướng
+        login();
+        navigate('/account/profile');
+      } else {
+        // SAI: Hiển thị lỗi
+        setError('Invalid email or password. Please try again.');
+      }
+    }, 1500); // Giả lập 1.5 giây chờ mạng
+  };
 
   return (
     <div className="max-w-md mx-auto">
       {/* Header */}
-      <h2 className="text-4xl font-bold text-text-primary mb-2">Login</h2>
-      <p className="text-text-secondary mb-8">Login to access your Elysian Realm account</p>
+      <h2 className="text-4xl font-bold text-text-primary mb-2">Đăng nhập</h2>
+      <p className="text-text-secondary mb-8">Đăng nhập để truy cập tài khoản Elysian Realm của bạn</p>
 
       {/* Form */}
-      <form onSubmit={(e) => e.preventDefault()}>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-text-primary mb-2" htmlFor="email">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            placeholder="john.doe@gmail.com"
-            className="w-full px-4 py-3 border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
-            defaultValue="john.doe@gmail.com"
-          />
-        </div>
+<form onSubmit={handleSubmit}>
+        
+        {/* --- 4. KẾT NỐI INPUT VỚI STATE --- */}
+        <Input
+          id="email"
+          label="Email"
+          type="email"
+          placeholder="Nhập email"
+          value={email} // <-- Dùng value
+          onChange={(e) => setEmail(e.target.value)} // <-- Dùng onChange
+          className="mb-4"
+          disabled={isLoading}
+        />
 
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-text-primary mb-2" htmlFor="password">
-            Password
-          </label>
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              id="password"
-              placeholder="••••••••"
-              className="w-full px-4 py-3 border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              defaultValue="12345678"
-            />
+        <Input
+          id="password"
+          label="Mật khẩu"
+          type={showPassword ? 'text' : 'password'}
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
+          className="mb-6" // Chuyển mb-6 vào đây
+          // Truyền nút "con mắt" vào prop iconRight
+          iconRight={
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-text-secondary"
+              className="text-text-secondary" // Bỏ hết các class căn chỉnh
             >
               {showPassword ? <FiEyeOff /> : <FiEye />}
             </button>
-          </div>
-        </div>
-
+          }
+        />
+        {/* Xóa <div> và <button> bên ngoài đã bao bọc Input */}
+        
         <div className="flex justify-between items-center mb-6">
-          <label className="flex items-center text-sm text-text-secondary cursor-pointer">
-            <input type="checkbox" className="mr-2 rounded border-border-primary text-brand-primary focus:ring-brand-primary" />
-            Remember me
-          </label>
+          <Checkbox id="remember" label="Ghi nhớ tài khoản" disabled={isLoading} />
           <Link to="/forgot-password" className="text-sm text-brand-primary font-medium hover:underline">
-            Forgot Password?
+            Quên mật khẩu?
           </Link>
         </div>
 
-        <button
+        {/* --- 5. HIỂN THỊ LỖI (NẾU CÓ) --- */}
+        {error && (
+          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+        )}
+
+        {/* --- 6. HIỂN THỊ SPINNER TRONG NÚT --- */}
+        <Button
           type="submit"
-          className="w-full bg-brand-primary text-white py-3 rounded-lg font-semibold shadow-md hover:bg-opacity-90 transition-all"
+          className="w-full"
+          disabled={isLoading}
         >
-          Login
-        </button>
+          {isLoading ? <Spinner size="sm" className="mx-auto" /> : 'Đăng nhập'}
+        </Button>
       </form>
 
       {/* Social Login */}
@@ -72,9 +115,9 @@ const LoginPage = () => {
 
       {/* Link to Register */}
       <p className="text-center text-sm text-text-secondary mt-8">
-        Don't have an account? 
+        Chưa có tài khoản? 
         <Link to="/register" className="text-brand-primary font-medium hover:underline ml-1">
-          Sign up
+          Đăng ký
         </Link>
       </p>
     </div>

@@ -18,7 +18,7 @@ const SearchTabs = () => {
           `}
         >
           <IoPaperPlaneOutline className="text-lg" />
-          <span>Flights</span>
+          <span>Chuyến bay</span>
         </button>
         <button
           onClick={() => setActiveTab('stays')}
@@ -27,7 +27,7 @@ const SearchTabs = () => {
           `}
         >
           <FiMapPin className="text-lg" />
-          <span>Stays</span>
+          <span>Khách sạn</span>
         </button>
       </div>
       

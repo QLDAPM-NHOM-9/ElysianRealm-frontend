@@ -34,10 +34,38 @@ export default {
         // 'brand-green-pale': '#F0FBF7',
       },
       fontFamily: {
-        // Giữ nguyên font Inter
         sans: ['Inter', 'sans-serif'],
         serif: ['Playfair Display', 'serif'],
+        
+        // --- THÊM DÒNG NÀY ---
+        'brand': ['Quicksand', 'serif'] // Đặt tên là 'brand'
       },
+      keyframes: {
+        // Animation lơ lửng (đã có)
+        float: {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-50px) rotate(3deg)' },
+        },
+        // Animation phát sáng (MỚI)
+        glow: {
+          '0%, 100%': { 
+            // 1. Dùng filter: drop-shadow để glow theo hình dạng logo
+            // 2. Dùng màu #EC4899 (brand-primary) của bạn
+            filter: 'drop-shadow(0 0 5px rgba(236, 72, 153, 0.2))' 
+          },
+          '50%': { 
+            filter: 'drop-shadow(0 0 25px rgba(236, 72, 153, 0.9))' 
+          },
+        }
+      },
+      animation: {
+        // Giữ nguyên 2 animation cũ
+        float: 'float 6s ease-in-out infinite',
+        glow: 'glow 3s ease-in-out infinite',
+        
+        // --- THÊM ANIMATION MỚI (GỘP CẢ HAI) ---
+        'float-glow': 'float 6s ease-in-out infinite, glow 3s ease-in-out infinite',
+      }
     },
   },
   plugins: [

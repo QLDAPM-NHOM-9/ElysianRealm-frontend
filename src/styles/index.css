@@ -48,3 +48,17 @@
     background-color: var(--brand-green-dark);
   }
 }
+
+@utility text-stroke-brand {
+  /* 1. Đặt màu BÊN TRONG chữ là TRONG SUỐT */
+  color: transparent; 
+  
+  /* 2. Đặt màu VIỀN là màu hồng (brand-primary) */
+  -webkit-text-stroke-color: var(--brand-primary); 
+  
+  /* 3. Đặt độ dày viền (1px hoặc 1.5px) */
+  -webkit-text-stroke-width: 1.5px;
+  
+  /* (Tùy chọn: Thêm một chút bóng mờ để nó nổi bật hơn) */
+  /* filter: drop-shadow(0 0 1px var(--brand-primary)); */
+}

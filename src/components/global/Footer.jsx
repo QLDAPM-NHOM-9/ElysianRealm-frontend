@@ -2,14 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Newsletter from './Newsletter.jsx';
 import { FaFacebookF, FaTwitter, FaYoutube, FaInstagram } from 'react-icons/fa';
-import logoIcon from '../../assets/icons/Elysia.png'; 
+import logoIcon from '../../assets/icons/Elysia.png';
+import logoText from '../../assets/icons/Elysian.png';
 
 // Logo
 const Logo = () => (
   <Link to="/" className="flex items-center gap-2">
     {/* THAY ĐỔI TẠI ĐÂY: w-10 h-10 -> w-15 h-15 */}
     <img src={logoIcon} alt="Elysian Realm Logo" className="w-15 h-15 rounded-full object-cover" />
-    <span className="text-2xl font-bold text-text-primary">Elysian Realm</span>
+    <img src={logoText} alt="Elysian Realm" className="h-15" />
   </Link>
 );
 
@@ -44,15 +45,15 @@ const Footer = () => {
         <Newsletter />
 
         {/* 2. Footer Links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 py-16">
           {/* Cột Logo & Social */}
           <div className="col-span-2 md:col-span-4 lg:col-span-2 pr-8">
             <Logo />
-            <div className="flex gap-4 my-6">
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaFacebookF /></a>
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaTwitter /></a>
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaYoutube /></a>
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaInstagram /></a>
+            <div className="flex justify-between my-6 pr-13">
+              <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaFacebookF /></a>
+              <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaTwitter /></a>
+              <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaYoutube /></a>
+              <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaInstagram /></a>
             </div>
           </div>
           

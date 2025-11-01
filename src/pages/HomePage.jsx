@@ -14,11 +14,6 @@ const HomePage = () => {
         className="h-[730px] w-full bg-cover bg-center relative flex items-center justify-center"
         style={{ backgroundImage: `url(${heroImageUrl})` }} 
       >
-        {/* LƯU Ý: Vì chúng ta đã đẩy cả section này xuống, 
-           lớp phủ bg-black/30 sẽ không còn cần thiết 
-           trừ khi bạn muốn ảnh tối đi. 
-           Phần header trắng sẽ nằm trên, ảnh 730px sẽ nằm dưới.
-        */}
         {/* <div className="absolute inset-0 bg-black/30" /> */}
         
         <div className="container mx-auto px-4 z-10 text-center">
