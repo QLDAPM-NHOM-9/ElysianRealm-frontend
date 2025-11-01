@@ -1,0 +1,50 @@
+/* 1. Import Tailwind v4 (thay cho @tailwind) */
+@import "tailwindcss";
+
+/* 2. Chỉ cho v4 biết file config JS của bạn ở đâu */
+@config "../../tailwind.config.js";
+
+/* 3. Định nghĩa tất cả biến tùy chỉnh trong @theme */
+@theme {
+  /* Màu Xanh Lá chính */
+  --brand-green: #31B48E;
+  --brand-green-dark: #2a9a7a; /* Thêm màu đậm hơn để hover */
+  --brand-green-light: #C1F6E4;
+  --brand-green-pale: #F0FBF7;
+
+  /* Màu Chữ */
+  --text-primary: #112211;
+  --text-secondary: #7C8881;
+  --text-tertiary: #889898;
+
+  /* Màu Nền */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FAFAFA;
+
+  /* Màu Viền */
+  --border-primary: #E8E8E8;
+  
+  /* Font */
+  --font-sans: 'Inter';
+}
+
+/* 4. Áp dụng các style cơ bản (nếu cần) */
+@layer base {
+  body {
+    font-family: var(--font-sans), sans-serif;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+  }
+}
+
+/* 5. Tạo class .btn-primary bằng @utility (thay cho @layer components) */
+@utility btn-primary {
+  @apply px-5 py-2 rounded-full font-semibold text-white shadow-md;
+  background-color: var(--brand-green);
+  transition: background-color 0.2s ease;
+
+  /* Sửa hover không dùng bg-opacity-90 (đã cũ) */
+  &:hover {
+    background-color: var(--brand-green-dark);
+  }
+}
