@@ -23,9 +23,7 @@ const NotFoundPage = () => {
         <source src={notFoundVideo} type="video/mp4" />
         Trình duyệt của bạn không hỗ trợ video.
       </video>
-      
-      {/* --- LỚP PHỦ MÀU MỜ (ĐÃ XÓA) --- */}
-      {/* <div className="absolute inset-0 z-5 bg-black/30 backdrop-blur-sm" /> */}
+    
 
       {/* --- NỘI DUNG (z-10) --- */}
       <div className="relative z-10 flex flex-col items-center">

@@ -1,20 +1,22 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/common/Button.jsx';
-import FlightSearchForm from '../../components/search/FlightSearchForm.jsx'; // TÁI SỬ DỤNG
-import { FiArrowRight } from 'react-icons/fi';
+import FlightSearchForm from '../../components/search/FlightSearchForm.jsx';
+import { FiSend } from 'react-icons/fi';
 
-// Ảnh nền Hero (Bạn có thể thay đổi)
-const heroImageUrl = "https://images.unsplash.com/photo-1544015639-2a96b6b77f11?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
+// Ảnh nền Hero
+const heroImageUrl = "https://images.unsplash.com/photo-1544015639-2a96b6b77f11?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80";
 
 // Component con: Thẻ Gợi ý
 const RecommendationCard = ({ img, title, price }) => (
-  <Link to="#" className="rounded-lg overflow-hidden shadow-sm bg-bg-primary">
-    <img src={img} alt={title} className="w-full h-48 object-cover" />
+  <Link to={`/flight-listing?q=${title}`} className="rounded-lg overflow-hidden shadow-sm bg-bg-primary block h-full group">
+    <div className="overflow-hidden h-48">
+      <img src={img} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+    </div>
     <div className="p-4 flex justify-between items-center">
       <div>
         <h4 className="font-semibold text-text-primary">{title}</h4>
-        <p className="text-sm text-text-secondary">Book a stay</p>
+        <p className="text-sm text-text-secondary">Book a flight</p>
       </div>
       {price && (
         <span className="font-bold text-brand-primary">${price}</span>
@@ -24,25 +26,56 @@ const RecommendationCard = ({ img, title, price }) => (
 );
 
 const FlightSearchPage = () => {
+  const navigate = useNavigate();
+
+  // --- 1. STATE QUẢN LÝ FORM ---
+  const [searchData, setSearchData] = useState({
+    from: '', 
+    to: '', 
+    tripType: 'Return', 
+    departDate: '', 
+    returnDate: '', 
+    passengers: 1, 
+    classType: 'Economy'
+  });
+
+  // --- 2. HÀM XỬ LÝ TÌM KIẾM ---
+  const handleSearch = () => {
+    // Lấy điểm đến (to) để làm từ khóa tìm kiếm
+    const query = searchData.to || '';
+    navigate(`/flight-listing?q=${query}`);
+  };
+
   return (
     <>
       {/* === HERO SECTION === */}
       <section 
-        className="h-[450px] w-full bg-cover bg-center relative flex items-center"
+        className="h-[550px] w-full bg-cover bg-center relative flex items-center"
         style={{ backgroundImage: `url(${heroImageUrl})` }}
       >
         <div className="absolute inset-0 bg-black/40" />
         <div className="container mx-auto px-4 z-10">
-          <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">
-            Chạm đến bầu trời – theo cách bạn muốn
+          <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg font-serif">
+            Make your travel<br/>whishlist, we’ll do the rest
           </h1>
           <p className="text-xl text-white font-light drop-shadow-md mb-8">
-            Ưu đãi chuyến bay linh hoạt theo kế hoạch của bạn
+            Special offers to suit your plan
           </p>
           
-          {/* Tái sử dụng Form Tìm kiếm Chuyến bay */}
-          <div className="max-w-6xl">
-            <FlightSearchForm />
+          {/* Form Container */}
+          <div className="max-w-6xl bg-white rounded-2xl shadow-xl p-6">
+            {/* TRUYỀN PROPS ĐÚNG */}
+            <FlightSearchForm 
+              data={searchData}
+              onChange={(field, value) => setSearchData({ ...searchData, [field]: value })}
+            />
+            
+            {/* Nút Tìm kiếm */}
+            <div className="mt-6 flex justify-end">
+              <Button onClick={handleSearch} className="gap-2 px-8">
+                <FiSend /> Show Flights
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -51,13 +84,14 @@ const FlightSearchPage = () => {
       <section className="container mx-auto px-4 py-16">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold text-text-primary">Let's go places together</h2>
-          <Link to="#" className="text-brand-primary font-medium hover:underline">
+          <Link to="/flight-listing" className="text-brand-primary font-medium hover:underline">
             See all
           </Link>
         </div>
         <p className="text-text-secondary mb-8">Discover the latest offers and news and start planning your next trip with us.</p>
-        {/* (Placeholder cho bản đồ thế giới) */}
-        <div className="h-72 bg-brand-pale rounded-lg flex items-center justify-center text-brand-primary">
+        
+        {/* Placeholder Map */}
+        <div className="h-72 bg-brand-pale rounded-lg flex items-center justify-center text-brand-primary border-2 border-dashed border-brand-primary/30">
           Map Placeholder
         </div>
       </section>
@@ -66,22 +100,21 @@ const FlightSearchPage = () => {
       <section className="container mx-auto px-4 py-16">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold text-text-primary">Fall into travel</h2>
-          <Link to="#" className="text-brand-primary font-medium hover:underline">
+          <Link to="/flight-listing" className="text-brand-primary font-medium hover:underline">
             See all
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <RecommendationCard img="https://via.placeholder.com/300x200" title="Melbourne" price={700} />
-          <RecommendationCard img="https://via.placeholder.com/300x200" title="Paris" price={600} />
-          <RecommendationCard img="https://via.placeholder.com/300x200" title="London" price={350} />
-          <RecommendationCard img="https://via.placeholder.com/300x200" title="Columbia" price={700} />
+          <RecommendationCard img="https://images.unsplash.com/photo-1514214246283-efbb2752a780" title="Melbourne" price={700} />
+          <RecommendationCard img="https://images.unsplash.com/photo-1502602898657-3e91760cbb34" title="Paris" price={600} />
+          <RecommendationCard img="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad" title="London" price={350} />
+          <RecommendationCard img="https://images.unsplash.com/photo-1583531352515-8884af319dc1" title="Columbia" price={700} />
         </div>
       </section>
 
       {/* === Backpacking Sri Lanka === */}
       <section className="container mx-auto px-4 py-16">
         <div className="bg-bg-primary p-8 rounded-lg shadow-sm flex flex-col lg:flex-row gap-8">
-          {/* Cột trái: Text */}
           <div className="lg:w-1/3">
             <h2 className="text-3xl font-bold text-text-primary mb-4">Backpacking Sri Lanka</h2>
             <div className="flex items-center gap-2 mb-4">
@@ -90,15 +123,16 @@ const FlightSearchPage = () => {
               </span>
             </div>
             <p className="text-text-secondary mb-6">
-              Traveling is a unique experience as it's the best way to unplug from the pushes and pulls of daily life. It helps us to forget about our problems...
+              Traveling is a unique experience as it's the best way to unplug from the pushes and pulls of daily life. It helps us to forget about our problems, frustrations, and fears at home.
             </p>
-            <Button variant="primary">Book Flight</Button>
+            <Link to="/flight-listing">
+              <Button variant="primary">Book Flight</Button>
+            </Link>
           </div>
-          {/* Cột phải: Ảnh */}
           <div className="lg:w-2/3 grid grid-cols-2 grid-rows-2 gap-4 h-80">
-            <img src="https://via.placeholder.com/400x300" alt="Sri Lanka 1" className="col-span-1 row-span-2 rounded-lg object-cover h-full" />
-            <img src="https://via.placeholder.com/300x200" alt="Sri Lanka 2" className="col-span-1 row-span-1 rounded-lg object-cover h-full" />
-            <img src="https://via.placeholder.com/300x200" alt="Sri Lanka 3" className="col-span-1 row-span-1 rounded-lg object-cover h-full" />
+            <img src="https://images.unsplash.com/photo-1586796676762-2309e3a3e66a" alt="Sri Lanka 1" className="col-span-1 row-span-2 rounded-lg object-cover h-full w-full" />
+            <img src="https://images.unsplash.com/photo-1546522933-288277274075" alt="Sri Lanka 2" className="col-span-1 row-span-1 rounded-lg object-cover h-full w-full" />
+            <img src="https://images.unsplash.com/photo-1588258219511-64eb629cb833" alt="Sri Lanka 3" className="col-span-1 row-span-1 rounded-lg object-cover h-full w-full" />
           </div>
         </div>
       </section>

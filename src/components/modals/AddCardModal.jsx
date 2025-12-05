@@ -1,75 +1,106 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FiCreditCard, FiLock } from 'react-icons/fi';
-
-// --- IMPORT CÁC COMPONENT COMMON ---
-import Modal from '../common/Modal.jsx'; // Dùng Modal chung
+import Modal from '../common/Modal.jsx';
 import Input from '../common/Input.jsx';
 import Select from '../common/Select.jsx';
 import Checkbox from '../common/Checkbox.jsx';
 import Button from '../common/Button.jsx';
+import Spinner from '../common/Spinner.jsx';
 
-const AddCardModal = ({ isOpen, onClose }) => {
-  // Bọc form của bạn bên trong Modal chung
+const AddCardModal = ({ isOpen, onClose, onSubmit }) => {
+  const [cardNumber, setCardNumber] = useState('');
+  const [expDate, setExpDate] = useState('');
+  const [cvc, setCvc] = useState('');
+  const [name, setName] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+
+    // Giả lập xử lý API
+    setTimeout(() => {
+      // Gọi hàm onSubmit được truyền từ cha với dữ liệu thẻ mới
+      if (onSubmit) {
+        onSubmit({
+          id: Date.now(),
+          digits: cardNumber.slice(-4) || '0000', // Lấy 4 số cuối
+          expiry: expDate || '12/28'
+        });
+      }
+      
+      // Reset form & đóng modal
+      setIsProcessing(false);
+      setCardNumber('');
+      setExpDate('');
+      setCvc('');
+      setName('');
+      onClose();
+    }, 1000);
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Add a new Card">
-      <form onSubmit={(e) => e.preventDefault()}>
-        
-        {/* Card Number */}
+    <Modal isOpen={isOpen} onClose={onClose} title="Thêm thẻ mới">
+      <form onSubmit={handleSubmit}>
         <div className="mb-4 relative">
           <Input
-            id="modalCardNumber" label="Card Number"
-            placeholder="4321 4321 4321 4321"
+            label="Số thẻ"
+            placeholder="0000 0000 0000 0000"
+            value={cardNumber}
+            onChange={(e) => setCardNumber(e.target.value)}
+            required
+            iconRight={<FiCreditCard className="text-xl text-text-tertiary" />}
           />
-          <FiCreditCard className="absolute top-9 right-4 text-text-tertiary text-xl" />
         </div>
 
-        {/* Exp. Date & CVC */}
         <div className="flex gap-4 mb-4">
           <Input
-            id="modalExpDate" label="Exp. Date" placeholder="02/27"
+            label="Ngày hết hạn"
+            placeholder="MM/YY"
+            value={expDate}
+            onChange={(e) => setExpDate(e.target.value)}
             className="w-1/2"
+            required
           />
           <div className="w-1/2 relative">
             <Input
-              id="modalCvc" label="CVC" placeholder="123"
+              label="CVC"
+              placeholder="123"
+              value={cvc}
+              onChange={(e) => setCvc(e.target.value)}
+              required
+              iconRight={<FiLock className="text-text-tertiary" />}
             />
-            <FiLock className="absolute top-9 right-4 text-text-tertiary" />
           </div>
         </div>
 
-        {/* Name on Card */}
         <Input
-          id="modalCardName" label="Name on Card" placeholder="John Doe"
+          label="Tên trên thẻ"
+          placeholder="NGUYEN VAN A"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           className="mb-4"
+          required
         />
 
-        {/* Country or Region (Sử dụng Select) */}
-        <Select
-          id="modalCountry" label="Country or Region"
-          className="mb-6"
-          defaultValue="United States"
-        >
-          <option>United States</option>
-          <option>Vietnam</option>
-          <option>Canada</option>
-          <option>United Kingdom</option>
+        <Select label="Quốc gia" className="mb-6" defaultValue="Vietnam">
+          <option value="Vietnam">Vietnam</option>
+          <option value="United States">United States</option>
         </Select>
 
-        {/* Securely save */}
         <Checkbox
           id="modalSaveCard"
-          label="Securely save my information for 1-click checkout"
+          label="Lưu thẻ này cho lần thanh toán sau"
           className="mb-6"
           defaultChecked
         />
 
-        {/* Nút Add Card */}
         <Button
           type="submit"
           className="w-full"
-          onClick={onClose} // Tạm thời đóng modal
+          disabled={isProcessing}
         >
-          Add Card
+          {isProcessing ? <Spinner size="sm" /> : 'Thêm thẻ'}
         </Button>
       </form>
     </Modal>

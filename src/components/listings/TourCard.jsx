@@ -1,9 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FiHeart, FiStar, FiMapPin } from 'react-icons/fi';
-import Button from '../common/Button.jsx'; // Dùng Button chung
+import Button from '../common/Button.jsx';
 
-const HotelCard = ({ name, location, price, rating, reviewCount, imageUrl }) => {
+const TourCard = ({ id, name, location, price, rating, reviewCount, imageUrl, ...tour }) => {
+  const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    navigate(`/tour-detail/${id}`, { state: { tour: { id, name, location, price, rating, reviewCount, imageUrl, ...tour } } });
+  };
+
   return (
     <div className="bg-bg-primary rounded-lg shadow-sm border border-border-primary overflow-hidden flex flex-col md:flex-row">
       {/* Cột ảnh */}
@@ -48,7 +54,11 @@ const HotelCard = ({ name, location, price, rating, reviewCount, imageUrl }) => 
             <p className="text-xs text-text-secondary">excl. tax</p>
           </div>
           
-          <Button variant="secondary" className="px-8">
+          <Button 
+            variant="secondary" 
+            className="px-8"
+            onClick={handleViewDetails}
+          >
             View Place
           </Button>
         </div>
@@ -57,4 +67,4 @@ const HotelCard = ({ name, location, price, rating, reviewCount, imageUrl }) => 
   );
 };
 
-export default HotelCard;
+export default TourCard;

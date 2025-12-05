@@ -30,11 +30,9 @@ const HomePage = () => {
       {/* === Plan your perfect trip === */}
       <PopularDestinations />
 
-      {/* === CTA Blocks (Flights / Hotels) === */}
+      {/* === CTA Blocks (Flights / Tours) === */}
       <CtaBlocks />
 
-      {/* === Reviews Section === */}
-      <Reviews />
     </>
   );
 };

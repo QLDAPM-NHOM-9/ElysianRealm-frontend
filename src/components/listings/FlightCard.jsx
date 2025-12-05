@@ -1,9 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiHeart, FiStar } from 'react-icons/fi';
-import Radio from '../common/Radio.jsx'; // <-- IMPORT
-import Button from '../common/Button.jsx'; // <-- IMPORT
+import Radio from '../common/Radio.jsx';
+import Button from '../common/Button.jsx';
 
-const FlightCard = ({ airline, logoUrl, price, rating, reviewCount }) => {
+const FlightCard = ({ id, airline, logoUrl, price, rating, reviewCount, ...flight }) => {
+  const navigate = useNavigate();
+
+  const handleBooking = () => {
+    navigate('/flight-booking', { state: { flight: { id, airline, logoUrl, price, rating, reviewCount, ...flight } } });
+  };
+
   return (
     <div className="bg-bg-primary rounded-lg shadow-sm border border-border-primary overflow-hidden">
       {/* Header của thẻ */}
@@ -58,7 +65,10 @@ const FlightCard = ({ airline, logoUrl, price, rating, reviewCount }) => {
           </Button>
           
           {/* --- DÙNG <Button> --- */}
-          <Button variant="secondary">
+          <Button 
+            variant="secondary"
+            onClick={handleBooking}
+          >
             View Deals
           </Button>
         </div>

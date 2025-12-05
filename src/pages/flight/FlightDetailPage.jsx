@@ -13,7 +13,7 @@ const Breadcrumbs = () => (
     <FiChevronRight className="mx-1" />
     <Link to="#" className="hover:underline">Istanbul</Link>
     <FiChevronRight className="mx-1" />
-    <span className="text-text-primary font-medium">CVK Park Bosphorus Hotel Istanbul</span>
+    <span className="text-text-primary font-medium">Tour Detail</span>
   </nav>
 );
 

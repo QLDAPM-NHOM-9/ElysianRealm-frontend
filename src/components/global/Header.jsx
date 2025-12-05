@@ -1,23 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiHeart, FiUser, FiSearch, FiMapPin, FiLogOut } from 'react-icons/fi';
+import { FiHeart, FiUser, FiSearch, FiCompass, FiLogOut } from 'react-icons/fi'; // Dùng FiCompass cho Tour
 import { IoPaperPlaneOutline } from 'react-icons/io5';
-import logoIcon from '../../assets/icons/Elysia.png';
+import logoIcon from '../../assets/icons/Elysia.png'; 
 import logoText from '../../assets/icons/Elysian.png';
 import Input from '../common/Input.jsx'; 
 import Button from '../common/Button.jsx'; 
 import { useAuth } from '../../contexts/AuthContext.jsx'; 
 
-// Component con: Logo
 const Logo = () => (
   <Link to="/" className="flex items-center gap-2">
-    <img src={logoIcon} alt="Elysian Realm Logo" className="w-15 h-15 rounded-full object-cover" />
-    <img src={logoText} alt="Elysian Realm" className="h-15" />
+    <img src={logoIcon} alt="Logo" className="w-15 h-15 rounded-full object-cover" />
+    <img src={logoText} alt="Elysian Realm" className="h-12" />
   </Link>
 );
 
-// Component con: Nút Tab (dùng nội bộ)
-// (Phiên bản này là phiên bản "đổi màu", không phải "trượt")
 const TabButton = ({ label, icon, isActive, onClick }) => (
   <button
     type="button"
@@ -36,7 +33,7 @@ const TabButton = ({ label, icon, isActive, onClick }) => (
 
 const Header = () => {
   const [activeTab, setActiveTab] = useState('flights');
-  const [searchQuery, setSearchQuery] = useState(''); // State đã có
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const { user, logout } = useAuth(); 
 
@@ -47,7 +44,8 @@ const Header = () => {
     if (activeTab === 'flights') {
       navigate(`/flight-listing?q=${searchQuery}`);
     } else {
-      navigate(`/hotel-listing?q=${searchQuery}`);
+      // --- CẬP NHẬT LOGIC TOUR ---
+      navigate(`/tour-listing?q=${searchQuery}`);
     }
   };
 
@@ -55,41 +53,40 @@ const Header = () => {
     <header className="bg-bg-primary sticky top-0 z-50 shadow-xs">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center gap-4">
         
-        {/* Logo (Bên trái) */}
+        {/* Logo */}
         <div className="flex-shrink-0">
           <Logo />
         </div>
 
-        {/* Thanh tìm kiếm (Giữa) */}
+        {/* Thanh tìm kiếm */}
         <form 
           onSubmit={handleSearch} 
           className="flex-1 max-w-2xl flex items-center gap-4"
         >
-          {/* Tabs: Flights / Stays */}
+          {/* Tabs: Flights / Tours */}
           <div className="flex justify-center gap-2 p-1 bg-gray-100 rounded-full">
             <TabButton
-              label="Chuyến bay" // <-- Đã Việt hóa
+              label="Chuyến bay"
               icon={<IoPaperPlaneOutline />}
               isActive={activeTab === 'flights'}
               onClick={() => setActiveTab('flights')}
             />
+            {/* --- TAB TOUR --- */}
             <TabButton
-              label="Khách sạn" // <-- Đã Việt hóa
-              icon={<FiMapPin />}
-              isActive={activeTab === 'stays'}
-              onClick={() => setActiveTab('stays')}
+              label="Tours"
+              icon={<FiCompass />}
+              isActive={activeTab === 'tours'} // Đổi state check thành 'tours'
+              onClick={() => setActiveTab('tours')}
             />
           </div>
           
-          {/* Search Input và Nút */}
+          {/* Input */}
           <div className="relative flex-1">
             <Input
               id="headerSearch"
-              placeholder={activeTab === 'flights' ? 'Tìm chuyến bay...' : 'Tìm khách sạn...'}
-              // --- CẬP NHẬT LOGIC TẠI ĐÂY ---
-              value={searchQuery} // <-- Kết nối value
-              onChange={(e) => setSearchQuery(e.target.value)} // <-- Thêm onChange
-              // --- HẾT CẬP NHẬT ---
+              placeholder={activeTab === 'flights' ? 'Tìm chuyến bay...' : 'Tìm tour du lịch...'}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               icon={<FiSearch />}
               className="[&_input]:rounded-full [&_input]:bg-bg-secondary"
             />
@@ -101,37 +98,45 @@ const Header = () => {
             </button>
           </div>
         </form>
-        
-        {/* User Actions (Bên phải) */}
+
+        {/* User Actions */}
         <div className="flex-shrink-0 flex items-center gap-4">
           {user ? (
             <>
-              <Link to="/favourites" className="flex items-center gap-2 text-text-secondary hover:text-text-primary">
+              <Link
+                to="/favourites"
+                className="flex items-center gap-2 text-text-secondary hover:text-text-primary"
+              >
                 <FiHeart className="text-xl" />
                 <span className="text-sm font-medium hidden lg:block">Yêu thích</span>
               </Link>
-              <Link 
-                to="/account/profile" 
-                className="flex items-center gap-2 pl-4 border-l border-border-primary"
+              <Link
+                to="/account/profile"
+                className="flex items-center gap-2 pl-4 border-l border-border-primary hover:opacity-80"
               >
-                <img 
+                <img
                   src="https://via.placeholder.com/32"
-                  alt={user.name}
+                  alt={user.name || user.email}
                   className="w-8 h-8 rounded-full object-cover"
                 />
-                <span className="text-sm font-medium text-text-primary hidden lg:block">{user.name}</span>
+                <span className="text-sm font-medium text-text-primary hidden lg:block">
+                  {user.name || user.email}
+                </span>
               </Link>
               <button
-                onClick={logout}
+                onClick={() => {
+                  logout();
+                  navigate('/');
+                }}
                 title="Đăng xuất"
-                className="text-text-secondary hover:text-brand-primary"
+                className="text-text-secondary hover:text-brand-primary transition-colors"
               >
                 <FiLogOut className="text-xl" />
               </button>
             </>
           ) : (
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               className="py-2 px-5"
               onClick={() => navigate('/login')}
             >

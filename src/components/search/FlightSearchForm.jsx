@@ -1,45 +1,151 @@
 import React from 'react';
-import { FiCalendar, FiMapPin, FiUsers, FiRepeat } from 'react-icons/fi';
+import { FiCalendar, FiMapPin, FiUsers, FiRepeat, FiBriefcase } from 'react-icons/fi';
+import Input from '../common/Input.jsx';
+import Select from '../common/Select.jsx';
 
-// Component con cho các ô input
-const SearchInput = ({ icon, label, value }) => (
-  <div className="flex-1 p-4 border-r border-border-primary last:border-r-0">
-    <label className="text-xs text-text-tertiary">{label}</label>
-    <div className="flex items-center gap-2 mt-1">
-      {icon}
-      <input 
-        type="text"
-        defaultValue={value}
-        className="w-full text-lg font-semibold text-text-primary bg-transparent border-none p-0 focus:ring-0"
-        placeholder={label}
-      />
-    </div>
-  </div>
-);
+// ⚠️ NOTE: AIRPORTS are static data codes - these don't change
+// In future, if backend needs to provide airport list, this can be moved to API
+// Currently keeping hardcoded as these are standard IATA airport codes
+const AIRPORTS = [
+  { code: 'EWR', name: 'Newark (EWR)' },
+  { code: 'JFK', name: 'New York (JFK)' },
+  { code: 'LHE', name: 'Lahore (LHE)' },
+  { code: 'KHI', name: 'Karachi (KHI)' },
+  { code: 'IST', name: 'Istanbul (IST)' },
+  { code: 'DXB', name: 'Dubai (DXB)' },
+  { code: 'LHR', name: 'London (LHR)' },
+  { code: 'SGN', name: 'Ho Chi Minh (SGN)' },
+  { code: 'HAN', name: 'Ha Noi (HAN)' },
+];
 
-const FlightSearchForm = () => {
+// ⚠️ NOTE: Flight classes are standard worldwide (Economy, Business, First Class)
+// These don't change and don't come from backend
+const CLASSES = ['Economy', 'Business', 'First Class'];
+const TRIP_TYPES = ['Return', 'One Way'];
+
+const FlightSearchForm = ({ data, onChange }) => {
   return (
-    <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg">
-      <SearchInput 
-        icon={<FiMapPin className="text-brand-primary" />} 
-        label="Từ - Đến" 
-        value="Lahore - Karachi" 
-      />
-      <SearchInput 
-        icon={<FiRepeat className="text-brand-primary" />} 
-        label="Chuyến" 
-        value="Return" 
-      />
-      <SearchInput 
-        icon={<FiCalendar className="text-brand-primary" />} 
-        label="Ngày đi - Ngày về" 
-        value="07 Nov 22 - 13 Nov 22" 
-      />
-      <SearchInput 
-        icon={<FiUsers className="text-brand-primary" />} 
-        label="Hành khách - Hạng ghế" 
-        value="1 Passenger, Economy" 
-      />
+    <div className="bg-white rounded-2xl shadow-lg p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      {/* 1. From (Select) */}
+      <div className="relative">
+        <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">From</label>
+        <div className="relative">
+          <Select
+            id="from"
+            value={data.from}
+            onChange={(e) => onChange('from', e.target.value)}
+            className="[&_select]:pl-10 [&_select]:py-3 [&_select]:bg-bg-secondary [&_select]:border-none"
+          >
+            <option value="">Select Airport</option>
+            {AIRPORTS.map((airport) => (
+              <option key={airport.code} value={airport.code}>
+                {airport.name}
+              </option>
+            ))}
+          </Select>
+          <FiMapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-primary pointer-events-none" />
+        </div>
+      </div>
+
+      {/* 2. To (Select) */}
+      <div className="relative">
+        <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">To</label>
+        <div className="relative">
+          <Select
+            id="to"
+            value={data.to}
+            onChange={(e) => onChange('to', e.target.value)}
+            className="[&_select]:pl-10 [&_select]:py-3 [&_select]:bg-bg-secondary [&_select]:border-none"
+          >
+            <option value="">Select Airport</option>
+            {AIRPORTS.map((airport) => (
+              <option key={airport.code} value={airport.code}>
+                {airport.name}
+              </option>
+            ))}
+          </Select>
+          <FiMapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-primary pointer-events-none" />
+        </div>
+      </div>
+
+      {/* 3. Trip Type (Select) */}
+      <div className="relative">
+        <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">Trip</label>
+        <div className="relative">
+          <Select
+            id="tripType"
+            value={data.tripType}
+            onChange={(e) => onChange('tripType', e.target.value)}
+            className="[&_select]:pl-10 [&_select]:py-3 [&_select]:bg-bg-secondary [&_select]:border-none"
+          >
+            {TRIP_TYPES.map((type) => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </Select>
+          <FiRepeat className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-primary pointer-events-none" />
+        </div>
+      </div>
+
+      {/* 4. Depart Date (Date Picker) */}
+      <div className="relative">
+        <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">Depart</label>
+        <Input 
+          id="departDate" 
+          type="date"
+          value={data.departDate}
+          onChange={(e) => onChange('departDate', e.target.value)}
+          className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
+        />
+      </div>
+
+      {/* 5. Return Date (Date Picker) - Ẩn nếu là One Way */}
+      {data.tripType === 'Return' && (
+        <div className="relative">
+          <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">Return</label>
+          <Input 
+            id="returnDate" 
+            type="date"
+            value={data.returnDate}
+            onChange={(e) => onChange('returnDate', e.target.value)}
+            className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
+          />
+        </div>
+      )}
+
+      {/* 6. Passengers (Number) */}
+      <div className="relative">
+        <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">Passengers</label>
+        <Input 
+          id="passengers" 
+          type="number"
+          min="1"
+          placeholder="1"
+          value={data.passengers}
+          onChange={(e) => onChange('passengers', e.target.value)}
+          icon={<FiUsers />}
+          className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
+        />
+      </div>
+
+      {/* 7. Class (Select) */}
+      <div className="relative">
+        <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">Class</label>
+        <div className="relative">
+          <Select
+            id="classType"
+            value={data.classType}
+            onChange={(e) => onChange('classType', e.target.value)}
+            className="[&_select]:pl-10 [&_select]:py-3 [&_select]:bg-bg-secondary [&_select]:border-none"
+          >
+            {CLASSES.map((cls) => (
+              <option key={cls} value={cls}>{cls}</option>
+            ))}
+          </Select>
+          <FiBriefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-primary pointer-events-none" />
+        </div>
+      </div>
+
     </div>
   );
 };

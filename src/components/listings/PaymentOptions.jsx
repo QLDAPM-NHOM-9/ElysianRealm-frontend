@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { FiCheckCircle, FiCircle, FiPlus } from 'react-icons/fi';
-import AddCardModal from '../modals/AddCardModal.jsx'; // Dùng lại Modal
+import AddCardModal from '../modals/AddCardModal.jsx';
 import Button from '../common/Button.jsx';
+import Spinner from '../common/Spinner.jsx'; // Import Spinner
 
 // Component con: Nút chọn (Pay in full / Pay part now)
 const PaymentRadioOption = ({ title, description, isActive, onClick }) => (
@@ -44,8 +45,8 @@ const SavedCardOption = ({ digits, expiry, isActive, onClick }) => (
   </button>
 );
 
-
-const PaymentOptions = () => {
+// --- COMPONENT CHÍNH ---
+const PaymentOptions = ({ onSubmit, isProcessing }) => {
   const [payMethod, setPayMethod] = useState('full'); // 'full' hoặc 'part'
   const [card, setCard] = useState('4321'); // '4321' hoặc 'new'
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,9 +101,14 @@ const PaymentOptions = () => {
         </button>
       </div>
 
-      {/* Nút xác nhận */}
-      <Button variant="primary" className="w-full mt-8 text-lg">
-        Confirm and Pay
+      {/* Nút xác nhận (ĐÃ CẬP NHẬT ĐỂ GỌI PROP onSubmit) */}
+      <Button 
+        variant="primary" 
+        className="w-full mt-8 text-lg"
+        onClick={onSubmit}
+        disabled={isProcessing} // Vô hiệu hóa khi đang tải
+      >
+        {isProcessing ? <Spinner size="md" className="border-white" /> : 'Confirm and Pay'}
       </Button>
 
       {/* Modal thêm thẻ */}

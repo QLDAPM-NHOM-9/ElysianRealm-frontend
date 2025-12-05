@@ -12,58 +12,58 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // --- 1. SỬ DỤNG useState ĐỂ KIỂM SOÁT FORM ---
-  // (Giả lập dữ liệu đã điền sẵn từ design)
-  const [email, setEmail] = useState('john.doe@gmail.com');
-  const [password, setPassword] = useState('12345678');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
-  // --- 2. QUẢN LÝ TRẠNG THÁI LOGIC ---
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(''); // Để lưu thông báo lỗi
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isLoading) return; // Ngăn double-click
+    setError('');
+    setIsLoading(true);
 
-    setError(''); // Xóa lỗi cũ
-    setIsLoading(true); // Bắt đầu loading
+    try {
+      // Call API to login
+      const response = await login(email, password);
+      const user = response.user;
 
-    // --- 3. GIẢ LẬP VIỆC GỌI API (MOCK API CALL) ---
-    setTimeout(() => {
-      setIsLoading(false); // Kết thúc loading
-      
-      // Giả lập logic xác thực
-      if (email === 'john.doe@gmail.com' && password === '12345678') {
-        // ĐÚNG: Gọi login từ Context và điều hướng
-        login();
-        navigate('/account/profile');
+      // Redirect based on role
+      if (user.role === 'ADMIN' || user.role === 'admin') {
+        navigate('/admin');
       } else {
-        // SAI: Hiển thị lỗi
-        setError('Invalid email or password. Please try again.');
+        navigate('/account/profile');
       }
-    }, 1500); // Giả lập 1.5 giây chờ mạng
+    } catch (err) {
+      const message =
+        err.message ||
+        'Thông tin đăng nhập không đúng. Vui lòng kiểm tra lại.';
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="max-w-md mx-auto">
       {/* Header */}
       <h2 className="text-4xl font-bold text-text-primary mb-2">Đăng nhập</h2>
-      <p className="text-text-secondary mb-8">Đăng nhập để truy cập tài khoản Elysian Realm của bạn</p>
+      <p className="text-text-secondary mb-8">
+        Đăng nhập để truy cập tài khoản Elysian Realm của bạn
+      </p>
 
       {/* Form */}
-<form onSubmit={handleSubmit}>
-        
-        {/* --- 4. KẾT NỐI INPUT VỚI STATE --- */}
+      <form onSubmit={handleSubmit}>
         <Input
           id="email"
           label="Email"
           type="email"
           placeholder="Nhập email"
-          value={email} // <-- Dùng value
-          onChange={(e) => setEmail(e.target.value)} // <-- Dùng onChange
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="mb-4"
           disabled={isLoading}
+          required
         />
 
         <Input
@@ -74,20 +74,19 @@ const LoginPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={isLoading}
-          className="mb-6" // Chuyển mb-6 vào đây
-          // Truyền nút "con mắt" vào prop iconRight
+          className="mb-6"
+          required
           iconRight={
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="text-text-secondary" // Bỏ hết các class căn chỉnh
+              className="text-text-secondary"
             >
               {showPassword ? <FiEyeOff /> : <FiEye />}
             </button>
           }
         />
-        {/* Xóa <div> và <button> bên ngoài đã bao bọc Input */}
-        
+
         <div className="flex justify-between items-center mb-6">
           <Checkbox id="remember" label="Ghi nhớ tài khoản" disabled={isLoading} />
           <Link to="/forgot-password" className="text-sm text-brand-primary font-medium hover:underline">
@@ -95,12 +94,12 @@ const LoginPage = () => {
           </Link>
         </div>
 
-        {/* --- 5. HIỂN THỊ LỖI (NẾU CÓ) --- */}
+        {/* Error Message */}
         {error && (
           <p className="text-red-500 text-sm text-center mb-4">{error}</p>
         )}
 
-        {/* --- 6. HIỂN THỊ SPINNER TRONG NÚT --- */}
+        {/* Submit Button */}
         <Button
           type="submit"
           className="w-full"
@@ -115,7 +114,7 @@ const LoginPage = () => {
 
       {/* Link to Register */}
       <p className="text-center text-sm text-text-secondary mt-8">
-        Chưa có tài khoản? 
+        Chưa có tài khoản?
         <Link to="/register" className="text-brand-primary font-medium hover:underline ml-1">
           Đăng ký
         </Link>

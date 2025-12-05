@@ -1,40 +1,125 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import authService from '../services/authService.js';
 
-// 1. Tạo Context
 const AuthContext = createContext(null);
 
-// 2. Tạo Provider Component (Component Cha)
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Ban đầu chưa đăng nhập
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
 
-  // Dữ liệu người dùng giả (Mock user data)
-  const mockUser = {
-    name: 'Elysia',
-    email: 'elysia@gmail.com',
-    //... (thêm các thông tin khác nếu bạn muốn)
+  /**
+   * Initialize user from token when component mounts
+   */
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        try {
+          setToken(storedToken);
+          // Try to fetch current user info
+          const currentUser = await authService.getCurrentUser();
+          setUser(currentUser.user || currentUser);
+        } catch (error) {
+          // Token is invalid, clear it
+          localStorage.removeItem('token');
+          setToken(null);
+          setUser(null);
+        }
+      }
+      setLoading(false);
+    };
+
+    initializeAuth();
+  }, []);
+
+  /**
+   * Login user
+   * @param {string} email
+   * @param {string} password
+   */
+  const login = async (email, password) => {
+    try {
+      const response = await authService.login(email, password);
+      const { token: newToken, user: userData } = response;
+      
+      setToken(newToken);
+      setUser(userData);
+      localStorage.setItem('token', newToken);
+      
+      return { token: newToken, user: userData };
+    } catch (error) {
+      throw error;
+    }
   };
 
-  // Hàm đăng nhập
-  const login = () => {
-    // Trong tương lai, bạn sẽ gọi API ở đây
-    // Hiện tại, chúng ta chỉ set dữ liệu giả
-    setUser(mockUser);
+  /**
+   * Register new user
+   * @param {Object} userData
+   */
+  const register = async (userData) => {
+    try {
+      const response = await authService.register(userData);
+      return response;
+    } catch (error) {
+      throw error;
+    }
   };
 
-  // Hàm đăng xuất
+  /**
+   * Logout user
+   */
   const logout = () => {
+    authService.logout();
     setUser(null);
+    setToken(null);
   };
 
-  // 3. Cung cấp 'user', 'login', 'logout' cho các component con
+  /**
+   * Check if user has specific role
+   * @param {string} role
+   */
+  const hasRole = (role) => {
+    return user?.role === role;
+  };
+
+  /**
+   * Check if user is admin
+   */
+  const isAdmin = () => {
+    return user?.role === 'ADMIN' || user?.role === 'admin';
+  };
+
+  /**
+   * Check if user is authenticated
+   */
+  const isAuthenticated = () => {
+    return !!token && !!user;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        loading,
+        login,
+        register,
+        logout,
+        hasRole,
+        isAdmin,
+        isAuthenticated,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-// 4. Tạo một custom Hook (để dễ sử dụng)
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
 };
