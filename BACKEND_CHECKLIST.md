@@ -1,7 +1,5 @@
 # 🔧 Checklist Backend - ElysianRealm
 
-**Danh sách công việc cho Backend Team - Chỉ ghi những cần làm**
-
 ---
 
 ## 🎯 Tóm Tắt

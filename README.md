@@ -1,4 +1,4 @@
-# 🌟 ElysianRealm Frontend - Hướng Dẫn Tiếng Việt
+# 🌟 ElysianRealm Frontend - Hướng Dẫn
 
 **Nền tảng đặt phòng/tour du lịch hiện đại được xây dựng bằng React, Vite và Tailwind CSS.**
 
