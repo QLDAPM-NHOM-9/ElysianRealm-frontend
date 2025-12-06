@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiCalendar, FiMapPin, FiUsers, FiHome } from 'react-icons/fi';
+import { FiCalendar, FiMapPin, FiUsers } from 'react-icons/fi';
 import Input from '../common/Input.jsx';
 import Select from '../common/Select.jsx';
 import Spinner from '../common/Spinner.jsx';
@@ -49,46 +49,19 @@ const TourSearchForm = ({ data, onChange }) => {
         </div>
       </div>
 
-      {/* 2. Check In (Date) */}
+      {/* 2. Start Date (Date) */}
       <div className="relative">
-        <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">Check In</label>
+        <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">Start Date</label>
         <Input 
-          id="checkIn" 
+          id="startDate" 
           type="date"
-          value={data.checkIn}
-          onChange={(e) => onChange('checkIn', e.target.value)}
+          value={data.startDate}
+          onChange={(e) => onChange('startDate', e.target.value)}
           className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
         />
       </div>
 
-      {/* 3. Check Out (Date) */}
-      <div className="relative">
-        <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">Check Out</label>
-        <Input 
-          id="checkOut" 
-          type="date"
-          value={data.checkOut}
-          onChange={(e) => onChange('checkOut', e.target.value)}
-          className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
-        />
-      </div>
-
-      {/* 4. Rooms (Number) */}
-      <div className="relative">
-        <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">Rooms</label>
-        <Input 
-          id="rooms" 
-          type="number"
-          min="1"
-          placeholder="1"
-          value={data.rooms}
-          onChange={(e) => onChange('rooms', e.target.value)}
-          icon={<FiHome />}
-          className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
-        />
-      </div>
-
-      {/* 5. Guests (Number) */}
+      {/* 3. Guests (Number) */}
       <div className="relative">
         <label className="block text-xs font-bold text-text-primary uppercase mb-1 ml-1">Guests</label>
         <Input 

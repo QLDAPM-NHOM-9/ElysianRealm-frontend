@@ -50,7 +50,7 @@ const TourCard = ({ id, name, location, price, rating, reviewCount, imageUrl, ..
         <div className="mt-auto flex justify-between items-end">
           <div className="text-right">
             <p className="text-xs text-text-secondary">starting from</p>
-            <p className="text-2xl font-bold text-brand-secondary">${price}<span className="text-sm font-normal text-text-secondary">/night</span></p>
+            <p className="text-2xl font-bold text-brand-secondary">${price}<span className="text-sm font-normal text-text-secondary">/person</span></p>
             <p className="text-xs text-text-secondary">excl. tax</p>
           </div>
           

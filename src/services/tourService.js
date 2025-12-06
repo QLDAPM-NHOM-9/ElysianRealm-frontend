@@ -38,7 +38,7 @@ export const tourService = {
    */
   getPopular: async () => {
     try {
-      const response = await axiosClient.get('/destinations/popular');
+      const response = await axiosClient.get('/tours/featured');
       return response.data || response;
     } catch (error) {
       throw error.response?.data || error;

@@ -23,9 +23,7 @@ const SearchTabs = () => {
   // --- STATE CHO FORM TOURS ---
   const [tourData, setTourData] = useState({
     destination: '', 
-    checkIn: '', 
-    checkOut: '', 
-    rooms: 1,
+    startDate: '', 
     guests: 2
   });
 
@@ -58,13 +56,13 @@ const SearchTabs = () => {
           <span>Flights</span>
         </button>
         <button
-          onClick={() => setActiveTab('stays')}
+          onClick={() => setActiveTab('tours')}
           className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all
-            ${activeTab === 'stays' ? 'bg-white text-text-primary shadow-lg' : 'bg-white/30 text-white hover:bg-white/50 backdrop-blur-sm'}
+            ${activeTab === 'tours' ? 'bg-white text-text-primary shadow-lg' : 'bg-white/30 text-white hover:bg-white/50 backdrop-blur-sm'}
           `}
         >
           <FiMapPin className="text-lg" />
-          <span>Stays</span>
+          <span>Tours</span>
         </button>
       </div>
       
@@ -88,7 +86,7 @@ const SearchTabs = () => {
             onChange={(field, value) => setFlightData({ ...flightData, [field]: value })} 
           />
         )}
-        {activeTab === 'stays' && (
+        {activeTab === 'tours' && (
           <TourSearchForm 
             data={tourData} 
             onChange={(field, value) => setTourData({ ...tourData, [field]: value })} 

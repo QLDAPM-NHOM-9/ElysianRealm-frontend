@@ -252,15 +252,13 @@ Tài liệu đầy đủ có sẵn trong thư mục gốc dự án:
 
 | Tài Liệu | Mục Đích |
 |----------|---------|
-| **README.md** | Hướng dẫn bằng tiếng Anh |
-| **README_VN.md** | Hướng dẫn này - Tiếng Việt |
-| **BACKEND_GUIDE_VN.md** | Hướng dẫn backend tiếng Việt |
+| **README.md** | Hướng dẫn này - Tiếng Việt |
+| **BAKEND_CHECKLIST.md** | Hướng dẫn backend tiếng Việt |
 | **PROJECT_STATUS.md** | Trạng thái dự án toàn diện |
-| **BACKEND_QUICK_START.md** | Quick start cho backend (Anh) |
-| **FRONTEND_READINESS_CHECKLIST.md** | Danh sách kiểm tra API |
-| **DATA_INTEGRATION_MAP.md** | Ví dụ luồng dữ liệu chi tiết |
+| **BACKEND_CHECKLIST.md** | Quick start cho backend |
 
-👉 **Bắt đầu với:** [BACKEND_GUIDE_VN.md](./BACKEND_GUIDE_VN.md) để tích hợp backend
+
+👉 **Bắt đầu với:** [BAKEND_CHECKLIST.md](./BACKEND_CHECKLIST.md) để tích hợp backend
 
 ---
 
@@ -350,7 +348,7 @@ Backend phải cho phép:
 - [ ] Lỗi 401 kích hoạt logout
 
 ### Kiểm Tra API
-Xem [BACKEND_GUIDE_VN.md](./BACKEND_GUIDE_VN.md) để có hướng dẫn kiểm tra toàn diện.
+Xem [BAKEND_CHECKLIST.md](./BAKEND_CHECKLIST.md) để có hướng dẫn kiểm tra toàn diện.
 
 ---
 
@@ -429,11 +427,11 @@ Cập nhật URL backend dựa trên môi trường:
 
 ## 🎉 Bắt Đầu
 
-1. Đọc [README_VN.md](./README_VN.md) (tập tin này)
+1. Đọc [README.md](./README.md) (tập tin này)
 2. Cài đặt dependencies: `npm install`
 3. Chạy dev server: `npm run dev`
 4. Mở trình duyệt: `http://localhost:5173`
-5. Để backend: Đọc [BACKEND_GUIDE_VN.md](./BACKEND_GUIDE_VN.md)
+5. Để backend: Đọc [BAKEND_CHECKLIST.md](./BAKEND_CHECKLIST.md)
 
 ---
 

@@ -76,9 +76,9 @@ Frontend sẵn sàng. Backend cần implement **18 endpoint API**.
 
 **Flight:** id, airline, from, to, departureTime, arrivalTime, availableSeats, price, logoUrl, flightNumber, duration, rating, reviewCount
 
-**Tour:** id, title, location, price, description, image, rating, reviewCount, availableSeats, duration, tags, startDate
+**Tour:** id, title, location, price, description, image, rating, reviewCount, availableSeats, duration, tags, startDate, flightId (⭐ REQUIRED)
 
-**Booking:** id, type, itemId, userId, status, date, guests, paymentMethod, totalPrice, bookingNumber, details
+**Booking:** id, type, itemId, userId, status, date, guests, paymentMethod, totalPrice, bookingNumber, details, flightId (⭐ OPTIONAL - null nếu user không chọn kèm vé)
 
 **Destination:** id, name, description, image, tags
 
@@ -107,18 +107,19 @@ Frontend sẵn sàng. Backend cần implement **18 endpoint API**.
 - [ ] Detail ✓
 - [ ] Featured ✓
 
-### Phase 4: Tour (5 endpoint)
-- [ ] Tour entity
+### Phase 4: Tour (5 endpoint) + Flight Link ⭐
+- [ ] Tour entity: flightId (REQUIRED) - mỗi tour phải có flight
 - [ ] List ✓
-- [ ] Detail ✓
-- [ ] Create ✓
+- [ ] Detail ✓ (return flight info từ flightId)
+- [ ] Create ✓ (phải set flightId)
 - [ ] Delete ✓
+- [ ] Featured ✓
 
-### Phase 5: Đặt chỗ (6 endpoint)
-- [ ] Booking entity
+### Phase 5: Đặt chỗ (6 endpoint) + Flight Booking ⭐
+- [ ] Booking entity: flightId (OPTIONAL)
 - [ ] My bookings ✓
 - [ ] Detail ✓
-- [ ] Create ✓
+- [ ] Create ✓ (flightId có thể null nếu user không chọn kèm vé)
 - [ ] Update status ✓
 - [ ] Get all ✓
 
@@ -144,7 +145,13 @@ Frontend sẵn sàng. Backend cần implement **18 endpoint API**.
 
 ✓ **Date:** YYYY-MM-DD
 
-✓ **camelCase:** departureTime, availableSeats
+✓ **camelCase:** departureTime, availableSeats, flightId
+
+✓ **Hybrid Model - Tour + Flight:**
+  - Mỗi Tour LUÔN có flightId (required)
+  - Khi booking tour: user có thể chọn kèm vé hoặc không
+  - Nếu chọn kèm vé: flightId được thêm vào booking
+  - Nếu không chọn: flightId = null
 
 ✓ **Protected:** Cần Authorization header
 

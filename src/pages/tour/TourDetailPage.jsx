@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { FiChevronRight, FiHeart, FiShare2, FiStar, FiMapPin, FiClock, FiCalendar, FiCheckCircle } from 'react-icons/fi';
+import { IoPaperPlaneOutline } from 'react-icons/io5';
 import Button from '../../components/common/Button.jsx';
 import Spinner from '../../components/common/Spinner.jsx';
 import tourService from '../../services/tourService.js';
+import flightService from '../../services/flightService.js';
 
 // Component con: Mục lịch trình
 const ItineraryItem = ({ day, description }) => (
@@ -43,6 +45,7 @@ const ReviewCard = ({ user, text, rating }) => (
 const TourDetailPage = () => {
   const { id } = useParams();
   const [tour, setTour] = useState(null);
+  const [flight, setFlight] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,6 +54,16 @@ const TourDetailPage = () => {
       try {
         const data = await tourService.getById(id);
         setTour(data);
+        
+        // Tour LUÔN có flight, fetch flight details
+        if (data.flightId) {
+          try {
+            const flightData = await flightService.getById(data.flightId);
+            setFlight(flightData);
+          } catch (err) {
+            console.warn("Failed to fetch flight:", err);
+          }
+        }
       } catch (error) {
         console.error("Failed to fetch tour:", error);
       } finally {
@@ -129,6 +142,31 @@ const TourDetailPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         {/* Cột trái: Nội dung chi tiết */}
         <div className="lg:col-span-2">
+          
+          {/* Flight Info (LUÔN bao gồm - tùy chọn mua) */}
+          {flight && (
+            <div className="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="flex items-center gap-2 mb-4">
+                <IoPaperPlaneOutline className="text-blue-600 text-xl" />
+                <h3 className="text-xl font-bold text-blue-900">Vé máy bay (kèm theo tour)</h3>
+              </div>
+              <div className="grid grid-cols-3 gap-4 text-sm mb-4">
+                <div>
+                  <p className="text-gray-600">Hãng</p>
+                  <p className="font-semibold text-text-primary">{flight.airline}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Tuyến đường</p>
+                  <p className="font-semibold text-text-primary">{flight.from} → {flight.to}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Thời gian</p>
+                  <p className="font-semibold text-text-primary">{flight.departureTime} - {flight.arrivalTime}</p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600">💡 Bạn có thể chọn kèm vé máy bay khi đặt tour</p>
+            </div>
+          )}
           
           {/* Tổng quan */}
           <div className="mb-8">

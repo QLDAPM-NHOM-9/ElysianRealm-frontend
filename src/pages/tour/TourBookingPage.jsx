@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BookingSidebar from '../../components/listings/BookingSidebar.jsx';
 import PaymentOptions from '../../components/listings/PaymentOptions.jsx';
+import Checkbox from '../../components/common/Checkbox.jsx';
 import { FiCalendar, FiClock, FiMapPin, FiUsers } from 'react-icons/fi';
+import { IoPaperPlaneOutline } from 'react-icons/io5';
 import { bookingService } from '../../services/api.js';
 
 // Component con: Thông tin Tour tóm tắt (Bên trái)
@@ -53,6 +55,7 @@ const TourBookingPage = () => {
   const location = useLocation();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [includeFlightInBooking, setIncludeFlightInBooking] = useState(true); // ← NEW: Mặc định kèm vé
 
   // Lấy data tour từ state truyền qua
   const tourData = location.state?.tour;
@@ -67,7 +70,11 @@ const TourBookingPage = () => {
     );
   }
 
-  // Dữ liệu cho Sidebar
+  // Dữ liệu cho Sidebar - tính giá động
+  const flightPrice = tourData.flight?.price || 0;
+  const tourPrice = tourData.price * 2; // 2 khách
+  const flightPriceTotal = includeFlightInBooking ? flightPrice : 0;
+
   const orderDetails = {
     title: tourData.title,
     subTitle: `${tourData.duration} • 2 Khách`,
@@ -75,11 +82,11 @@ const TourBookingPage = () => {
   };
 
   const priceDetails = {
-    base: tourData.price * 2, // 2 khách
+    base: tourPrice + flightPriceTotal,
     discount: 0,
     taxes: 20,
     serviceFee: 10,
-    total: tourData.price * 2 + 20 + 10,
+    total: tourPrice + flightPriceTotal + 20 + 10,
   };
 
   /**
@@ -96,6 +103,7 @@ const TourBookingPage = () => {
         guests: 2,
         date: new Date().toISOString().split('T')[0],
         paymentMethod: paymentData.method,
+        flightId: includeFlightInBooking ? tourData.flightId : null, // ← Thêm flightId chỉ nếu user chọn kèm vé
       };
 
       const response = await bookingService.create(bookingData);
@@ -134,6 +142,31 @@ const TourBookingPage = () => {
         {/* Cột trái: Thông tin & Thanh toán */}
         <main className="flex-1 space-y-6">
           <TourInfoSummary tour={tourData} />
+          
+          {/* Flight Option - LUÔN hiển thị, user chọn mua hay không */}
+          {tourData.flightId && (
+            <div className="bg-blue-50 p-6 rounded-lg shadow-sm border border-blue-200">
+              <div className="flex items-center gap-2 mb-4">
+                <IoPaperPlaneOutline className="text-blue-600 text-xl" />
+                <h3 className="text-lg font-bold text-blue-900">Thêm vé máy bay</h3>
+              </div>
+              <div className="grid grid-cols-3 gap-4 text-sm mb-4">
+                <div><p className="text-gray-600">Hãng</p><p className="font-semibold">{tourData.airline || 'N/A'}</p></div>
+                <div><p className="text-gray-600">Tuyến</p><p className="font-semibold">{tourData.from || 'N/A'} → {tourData.to || 'N/A'}</p></div>
+                <div><p className="text-gray-600">Thời gian</p><p className="font-semibold">{tourData.departureTime || 'N/A'}</p></div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Checkbox
+                  id="includeFlightCheckbox"
+                  checked={includeFlightInBooking}
+                  onChange={(e) => setIncludeFlightInBooking(e.target.checked)}
+                />
+                <label htmlFor="includeFlightCheckbox" className="text-sm font-medium text-gray-700 cursor-pointer">
+                  Thêm vé máy bay <span className="font-bold text-blue-900">${tourData.flight?.price || 0}</span>
+                </label>
+              </div>
+            </div>
+          )}
 
           <PaymentOptions
             onSubmit={handleBooking}
