@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FiHeart, FiUser, FiSearch, FiCompass, FiLogOut } from 'react-icons/fi'; // Dùng FiCompass cho Tour
 import { IoPaperPlaneOutline } from 'react-icons/io5';
 import logoIcon from '../../assets/icons/Elysia.png'; 
@@ -35,17 +35,32 @@ const Header = () => {
   const [activeTab, setActiveTab] = useState('flights');
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  const { user, logout } = useAuth(); 
+  const location = useLocation();
+  const { user, logout } = useAuth();
+
+  // Auto-detect active tab based on current route
+  useEffect(() => {
+    const path = location.pathname;
+    if (path.includes('/tour') || path.includes('/tour-')) {
+      setActiveTab('tours');
+    } else if (path.includes('/flight') || path.includes('/flight-')) {
+      setActiveTab('flights');
+    }
+    // Otherwise keep current tab
+  }, [location.pathname]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (!searchQuery.trim()) return; 
+
+    // Always navigate to listing page, even with empty search
+    // If search query is empty, show all results
+    const searchParam = searchQuery.trim() ? `?q=${searchQuery}` : '';
 
     if (activeTab === 'flights') {
-      navigate(`/flight-listing?q=${searchQuery}`);
+      navigate(`/flight-listing${searchParam}`);
     } else {
       // --- CẬP NHẬT LOGIC TOUR ---
-      navigate(`/tour-listing?q=${searchQuery}`);
+      navigate(`/tour-listing${searchParam}`);
     }
   };
 
@@ -86,7 +101,7 @@ const Header = () => {
               id="headerSearch"
               placeholder={activeTab === 'flights' ? 'Tìm chuyến bay...' : 'Tìm tour du lịch...'}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={setSearchQuery}
               icon={<FiSearch />}
               className="[&_input]:rounded-full [&_input]:bg-bg-secondary"
             />

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FiSend, FiCompass, FiMapPin, FiChevronRight, FiDownload, FiCalendar } from 'react-icons/fi';
-import { bookingService } from '../../services/api.js';
+import { FiSend, FiCompass, FiMapPin, FiChevronRight, FiDownload, FiCalendar, FiStar } from 'react-icons/fi';
+import { bookingService, reviewService } from '../../services/api.js';
+import { tourService } from '../../services/tourService.js';
 import Spinner from '../../components/common/Spinner.jsx';
+import Button from '../../components/common/Button.jsx';
+import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext.jsx';
 
 // Component vé máy bay
 const FlightTicketCard = ({ data }) => (
@@ -32,94 +36,336 @@ const FlightTicketCard = ({ data }) => (
         <p className="text-text-secondary">Trạng thái</p>
         <p
           className={`font-semibold capitalize ${
-            data.status === 'completed'
+            data.status === 'CONFIRMED' || data.status === 'COMPLETED'
               ? 'text-green-600'
-              : data.status === 'cancelled'
+              : data.status === 'CANCELLED'
               ? 'text-red-600'
-              : 'text-blue-600'
+              : 'text-orange-600'
           }`}
         >
-          {data.status === 'upcoming' ? 'Sắp tới' : data.status === 'completed' ? 'Hoàn thành' : 'Đã hủy'}
+          {data.status === 'PENDING' ? 'Chưa thanh toán' :
+           data.status === 'CONFIRMED' ? 'Đã thanh toán' :
+           data.status === 'COMPLETED' ? 'Hoàn thành' :
+           data.status === 'CANCELLED' ? 'Đã hủy' : 'Sắp tới'}
         </p>
       </div>
-      <button className="bg-brand-pale text-brand-primary font-medium py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-opacity-80">
+      <Button variant="secondary" className="font-medium py-2 px-4 shadow-none">
         <FiDownload />
         <span className="hidden sm:inline">Vé điện tử</span>
-      </button>
+      </Button>
     </div>
   </div>
 );
+
+// Component review modal
+const ReviewModal = ({ isOpen, onClose, booking, onSubmitReview }) => {
+  const [rating, setRating] = useState(5);
+  const [reviewText, setReviewText] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!reviewText.trim()) return;
+
+    setSubmitting(true);
+    try {
+      await onSubmitReview(booking, rating, reviewText);
+      setRating(5);
+      setReviewText('');
+      onClose();
+    } catch (error) {
+      console.error('Failed to submit review:', error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold text-text-primary">Đánh giá tour</h3>
+          <button onClick={onClose} className="text-text-secondary hover:text-text-primary">
+            ✕
+          </button>
+        </div>
+
+        <div className="mb-4">
+          <img src={booking.details.img} alt="Tour" className="w-full h-32 object-cover rounded-lg mb-2" />
+          <h4 className="font-semibold text-text-primary">{booking.details.name}</h4>
+          <p className="text-sm text-text-secondary">{booking.details.location}</p>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-text-primary mb-2">
+              Đánh giá của bạn
+            </label>
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  className={`text-2xl ${star <= rating ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-400 transition-colors`}
+                >
+                  <FiStar className={star <= rating ? 'fill-current' : ''} />
+                </button>
+              ))}
+              <span className="ml-2 text-sm text-text-secondary self-center">
+                {rating}/5 sao
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="reviewText" className="block text-sm font-medium text-text-primary mb-2">
+              Chia sẻ trải nghiệm của bạn
+            </label>
+            <textarea
+              id="reviewText"
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder="Hãy chia sẻ về trải nghiệm của bạn..."
+              rows={4}
+              className="w-full px-3 py-2 border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary resize-none"
+              required
+            />
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-2 px-4 border border-border-primary rounded-lg text-text-primary hover:bg-gray-50 transition-colors"
+            >
+              Hủy
+            </button>
+            <button
+              type="submit"
+              disabled={submitting || !reviewText.trim()}
+              className="flex-1 py-2 px-4 bg-brand-primary text-white rounded-lg hover:bg-brand-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {submitting ? 'Đang gửi...' : 'Gửi đánh giá'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 // Component vé tour
-const TourBookingCard = ({ data }) => (
-  <div className="bg-bg-primary border border-border-primary rounded-lg p-4 flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
-    <div className="flex items-center gap-4 w-full md:w-auto">
-      <img src={data.details.img} alt="Tour" className="w-16 h-16 rounded-lg object-cover" />
-      <div>
-        <p className="font-semibold text-text-primary line-clamp-1">
-          {data.details.name || data.details.title}
-        </p>
-        <div className="flex items-center gap-2 text-sm text-text-secondary mt-1">
-          <FiMapPin className="w-4 h-4 text-brand-primary" />
-          <span>{data.details.location}</span>
+const TourBookingCard = ({ data, onReviewClick, hasReviewed }) => {
+  const canReview = (data.status === 'CONFIRMED' || data.status === 'COMPLETED') && !hasReviewed;
+
+  return (
+    <div className="bg-bg-primary border border-border-primary rounded-lg p-4 flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
+      <div className="flex items-center gap-4 w-full md:w-auto">
+        <img src={data.details.img} alt="Tour" className="w-16 h-16 rounded-lg object-cover" />
+        <div>
+          <p className="font-semibold text-text-primary line-clamp-1">
+            {data.details.name || data.details.title}
+          </p>
+          <div className="flex items-center gap-2 text-sm text-text-secondary mt-1">
+            <FiMapPin className="w-4 h-4 text-brand-primary" />
+            <span>{data.details.location}</span>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
+        <div className="text-sm">
+          <p className="text-text-secondary">Khởi hành</p>
+          <div className="flex items-center gap-1 font-semibold text-text-primary">
+            <FiCalendar /> {data.details.startDate}
+          </div>
+        </div>
+        <div className="text-sm">
+          <p className="text-text-secondary">Trạng thái</p>
+          <p
+            className={`font-semibold capitalize ${
+              data.status === 'CONFIRMED' || data.status === 'COMPLETED'
+                ? 'text-green-600'
+                : data.status === 'CANCELLED'
+                ? 'text-red-600'
+                : 'text-orange-600'
+            }`}
+          >
+            {data.status === 'PENDING' ? 'Chưa thanh toán' :
+             data.status === 'CONFIRMED' ? 'Đã thanh toán' :
+             data.status === 'COMPLETED' ? 'Hoàn thành' :
+             data.status === 'CANCELLED' ? 'Đã hủy' : 'Sắp tới'}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="secondary"
+            className="font-medium py-2 px-4 shadow-none"
+            onClick={() => window.open(`/tour-ticket/${data.id}`, '_blank')}
+          >
+            <FiDownload />
+            <span className="hidden sm:inline">Xem Vé</span>
+          </Button>
+          {hasReviewed ? (
+            <Button
+              variant="outline"
+              className="font-medium py-2 px-4 shadow-none cursor-default"
+              disabled
+            >
+              <FiStar className="mr-1 text-yellow-500" />
+              <span className="hidden sm:inline">Đã đánh giá</span>
+            </Button>
+          ) : canReview ? (
+            <Button
+              variant="primary"
+              className="font-medium py-2 px-4 shadow-none"
+              onClick={() => onReviewClick(data)}
+            >
+              <FiStar className="mr-1" />
+              <span className="hidden sm:inline">Đánh giá</span>
+            </Button>
+          ) : null}
         </div>
       </div>
     </div>
-    <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
-      <div className="text-sm">
-        <p className="text-text-secondary">Khởi hành</p>
-        <div className="flex items-center gap-1 font-semibold text-text-primary">
-          <FiCalendar /> {data.details.startDate}
-        </div>
-      </div>
-      <div className="text-sm">
-        <p className="text-text-secondary">Trạng thái</p>
-        <p
-          className={`font-semibold capitalize ${
-            data.status === 'completed'
-              ? 'text-green-600'
-              : data.status === 'cancelled'
-              ? 'text-red-600'
-              : 'text-blue-600'
-          }`}
-        >
-          {data.status === 'upcoming' ? 'Sắp tới' : data.status === 'completed' ? 'Hoàn thành' : 'Đã hủy'}
-        </p>
-      </div>
-      <button className="bg-brand-pale text-brand-primary font-medium py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-opacity-80">
-        <FiDownload />
-        <span className="hidden sm:inline">Vé Tour</span>
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 const AccountHistoryPage = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('flights');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [reviewModal, setReviewModal] = useState({ isOpen: false, booking: null });
+  const [reviewedTours, setReviewedTours] = useState(new Set()); // Track reviewed tour IDs
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
         setLoading(true);
-        const data = await bookingService.getMyBookings();
-        setBookings(Array.isArray(data) ? data : []);
+
+        // Fetch bookings and user's reviews in parallel
+        const [bookingsResponse, reviewsResponse] = await Promise.allSettled([
+          bookingService.getMyBookings(),
+          reviewService.getReviewsByItem(0, 'TOUR').catch(() => ({ data: [] })) // Get all tour reviews, we'll filter client-side
+        ]);
+
+        const bookingsData = bookingsResponse.status === 'fulfilled'
+          ? (bookingsResponse.value.data || bookingsResponse.value || [])
+          : [];
+
+        const allReviews = reviewsResponse.status === 'fulfilled'
+          ? (reviewsResponse.value.data || reviewsResponse.value || [])
+          : [];
+
+        // Track which tours the current user has reviewed
+        const userReviews = allReviews.filter(review =>
+          review.author === (user?.name || user?.email) ||
+          review.author === user?.email
+        );
+        const reviewedTourIds = new Set(userReviews.map(review => review.itemId));
+        setReviewedTours(reviewedTourIds);
+
+        // Enhance each booking with item details
+        const enhancedBookings = await Promise.all(
+          bookingsData.map(async (booking) => {
+            try {
+              let itemDetails = {};
+
+              if (booking.type === 'TOUR') {
+                // Fetch tour details for TOUR bookings
+                const tour = await tourService.getById(booking.itemId);
+                itemDetails = {
+                  title: tour.title,
+                  img: tour.imageUrl,
+                  name: tour.title,
+                  location: tour.location,
+                  startDate: tour.startDate,
+                  duration: tour.duration
+                };
+              } else if (booking.type === 'FLIGHT') {
+                // Fetch flight details for FLIGHT bookings (simplified for now)
+                itemDetails = {
+                  airline: 'Unknown Airline',
+                  from: 'Unknown',
+                  to: 'Unknown',
+                  logoUrl: '/default-flight-logo.png'
+                };
+              }
+
+              return {
+                ...booking,
+                details: itemDetails,
+                // Fix: API returns uppercase TOUR/FLIGHT, convert to lowercase for filtering
+                type: booking.type.toLowerCase()
+              };
+            } catch (itemError) {
+              console.warn(`Failed to fetch details for ${booking.type} ${booking.itemId}:`, itemError);
+              // Return booking without details if fetch fails
+              return {
+                ...booking,
+                details: { title: 'Unknown', img: '/default-placeholder.png' },
+                type: booking.type.toLowerCase()
+              };
+            }
+          })
+        );
+
+        setBookings(enhancedBookings);
       } catch (err) {
         console.error('Failed to load bookings', err);
-        setError('Không thể tải lịch sử đặt chỗ');
+        setError('Không thể tải lịch sử đặt chỗ. Vui lòng kiểm tra kết nối.');
+        setBookings([]);
       } finally {
         setLoading(false);
       }
     };
     fetchBookings();
-  }, []);
+  }, [user]);
 
   // Lọc danh sách
   const filteredBookings = bookings.filter((b) =>
     activeTab === 'flights' ? b.type === 'flight' : b.type === 'tour'
   );
+
+  // Handlers for review functionality
+  const handleReviewClick = (booking) => {
+    setReviewModal({ isOpen: true, booking });
+  };
+
+  const handleCloseReviewModal = () => {
+    setReviewModal({ isOpen: false, booking: null });
+  };
+
+  const handleSubmitReview = async (booking, rating, reviewText) => {
+    try {
+      const reviewData = {
+        type: 'TOUR',
+        itemId: booking.itemId,
+        rating: rating,
+        text: reviewText.trim(),
+        author: user?.name || user?.email || 'Anonymous', // Use actual user name/email
+        avatar: user?.avatar || null
+      };
+
+      await reviewService.create(reviewData);
+
+      // Update the reviewed tours state to prevent duplicate reviews
+      setReviewedTours(prev => new Set([...prev, booking.itemId]));
+
+      toast.success('Đánh giá của bạn đã được gửi thành công!');
+
+      // Optionally refresh the page or update local state
+      // For now, just close the modal
+    } catch (error) {
+      console.error('Failed to submit review:', error);
+      toast.error('Không thể gửi đánh giá. Vui lòng thử lại.');
+      throw error; // Re-throw to let modal handle the error
+    }
+  };
 
   return (
     <div>
@@ -167,7 +413,12 @@ const AccountHistoryPage = () => {
               activeTab === 'flights' ? (
                 <FlightTicketCard key={booking.id} data={booking} />
               ) : (
-                <TourBookingCard key={booking.id} data={booking} />
+                <TourBookingCard
+                  key={booking.id}
+                  data={booking}
+                  onReviewClick={handleReviewClick}
+                  hasReviewed={reviewedTours.has(booking.itemId)}
+                />
               )
             )
           ) : (
@@ -180,6 +431,14 @@ const AccountHistoryPage = () => {
           )}
         </div>
       )}
+
+      {/* Review Modal */}
+      <ReviewModal
+        isOpen={reviewModal.isOpen}
+        onClose={handleCloseReviewModal}
+        booking={reviewModal.booking}
+        onSubmitReview={handleSubmitReview}
+      />
     </div>
   );
 };

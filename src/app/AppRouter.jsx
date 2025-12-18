@@ -21,19 +21,22 @@ import RegisterPage from '../pages/auth/RegisterPage.jsx';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.jsx';
 import VerifyCodePage from '../pages/auth/VerifyCodePage.jsx';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage.jsx';
-import RegisterPaymentPage from '../pages/auth/RegisterPaymentPage.jsx';
+
 
 // Account Pages
 import AccountProfilePage from '../pages/account/AccountProfilePage.jsx';
 import AccountHistoryPage from '../pages/account/AccountHistoryPage.jsx';
-import AccountPaymentPage from '../pages/account/AccountPaymentPage.jsx';
+
 
 // Admin Pages
 import DashboardPage from '../pages/admin/DashboardPage.jsx';
 import AdminUsersPage from '../pages/admin/AdminUsersPage.jsx';
 import AdminBookingsPage from '../pages/admin/AdminBookingsPage.jsx';
 import AdminFlightsPage from '../pages/admin/AdminFlightsPage.jsx';
-import AdminToursPage from '../pages/admin/AdminToursPage.jsx'; // <-- ĐÃ SỬA: Dùng AdminToursPage
+import AdminToursPage from '../pages/admin/AdminToursPage.jsx';
+import AddUserPage from '../pages/admin/AddUserPage.jsx';
+import AddFlightPage from '../pages/admin/AddFlightPage.jsx';
+import AddTourPage from '../pages/admin/AddTourPage.jsx';
 
 // Flight Pages
 import FlightSearchPage from '../pages/flight/FlightSearchPage.jsx';
@@ -83,10 +86,9 @@ const AppRouter = () => {
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
         <Route path="verify-code" element={<VerifyCodePage />} />
         <Route path="reset-password" element={<ResetPasswordPage />} />
-        <Route path="register-payment" element={<RegisterPaymentPage />} />
+
       </Route>
 
-      {/* === Protected Routes === */}
       {/* === Protected Routes === */}
       <Route element={<ProtectedRoute adminOnly={false} />}>
         {/* Favourites (Cần đăng nhập) */}
@@ -99,7 +101,7 @@ const AppRouter = () => {
           <Route index element={<Navigate to="profile" replace />} />
           <Route path="profile" element={<AccountProfilePage />} />
           <Route path="history" element={<AccountHistoryPage />} />
-          <Route path="payment" element={<AccountPaymentPage />} />
+
         </Route>
       </Route>
 
@@ -108,9 +110,14 @@ const AppRouter = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="users" element={<AdminUsersPage />} />
+          <Route path="users/add" element={<AddUserPage />} />
           <Route path="bookings" element={<AdminBookingsPage />} />
           <Route path="flights" element={<AdminFlightsPage />} />
+          <Route path="flights/add" element={<AddFlightPage />} />
+          <Route path="flights/:id/edit" element={<AddFlightPage />} />
           <Route path="tours" element={<AdminToursPage />} />
+          <Route path="tours/add" element={<AddTourPage />} />
+          <Route path="tours/:id/edit" element={<AddTourPage />} />
         </Route>
       </Route>
 

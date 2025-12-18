@@ -60,7 +60,7 @@ const LoginPage = () => {
           type="email"
           placeholder="Nhập email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={setEmail}
           className="mb-4"
           disabled={isLoading}
           required
@@ -72,7 +72,7 @@ const LoginPage = () => {
           type={showPassword ? 'text' : 'password'}
           placeholder="••••••••"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={setPassword}
           disabled={isLoading}
           className="mb-6"
           required

@@ -72,7 +72,7 @@ Frontend sẵn sàng. Backend cần implement **18 endpoint API**.
 
 **User:** id, email, password, name, role, avatar, created_at
 
-**Flight:** id, airline, from, to, departureTime, arrivalTime, availableSeats, price, logoUrl, flightNumber, duration, rating, reviewCount
+**Flight:** id, airline, from, to, departureTime, arrivalTime, availableSeats, price, logoUrl, flightNumber, duration
 
 **Tour:** id, title, location, price, description, image, rating, reviewCount, availableSeats, duration, tags, startDate, flightId (⭐ REQUIRED)
 

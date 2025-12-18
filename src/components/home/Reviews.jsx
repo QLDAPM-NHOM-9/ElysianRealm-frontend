@@ -33,14 +33,48 @@ const Reviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Fallback reviews in case API returns empty data
+  const fallbackReviews = [
+    {
+      id: 1,
+      title: "Trải nghiệm tuyệt vời tại Hà Nội",
+      text: "Chuyến đi đến Hà Nội thật tuyệt vời! Chúng tôi đã khám phá được nhiều điểm lịch sử và thưởng thức những món ăn đặc trưng của vùng. Hướng dẫn viên rất chuyên nghiệp và thân thiện.",
+      rating: 5,
+      user: "Nguyễn Văn A",
+      location: "Hà Nội",
+      img: "https://picsum.photos/600/400?random=600"
+    },
+    {
+      id: 2,
+      title: "Du lịch biển Đà Nẵng đáng nhớ",
+      text: "Đà Nẵng có bãi biển tuyệt đẹp và các điểm du lịch rất thú vị. Dịch vụ tốt, giá cả hợp lý. Chúng tôi sẽ quay lại lần sau và giới thiệu cho bạn bè.",
+      rating: 5,
+      user: "Trần Thị B",
+      location: "Đà Nẵng",
+      img: "https://picsum.photos/600/400?random=601"
+    },
+    {
+      id: 3,
+      title: "Khám phá Sapa - vùng núi hùng vĩ",
+      text: "Sapa mang đến những trải nghiệm tuyệt vời với ruộng bậc thang và văn hóa dân tộc. Không khí mát lạnh và cảnh quan tuyệt đẹp. Rất đáng để trải nghiệm!",
+      rating: 4,
+      user: "Lê Văn C",
+      location: "Sapa",
+      img: "https://picsum.photos/600/400?random=602"
+    }
+  ];
+
   // Gọi API khi component được mount
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await homeApi.getReviews();
-        setReviews(data);
+        // Use fallback data if API returns empty array
+        setReviews(data && data.length > 0 ? data : fallbackReviews);
       } catch (error) {
         console.error("Failed to load reviews", error);
+        // Use fallback data on error
+        setReviews(fallbackReviews);
       } finally {
         setLoading(false);
       }

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import flightService from '../../services/flightService.js';
 import Spinner from '../../components/common/Spinner.jsx';
 import Button from '../../components/common/Button.jsx';
+import toast from 'react-hot-toast';
 import { FiPlus, FiEdit2, FiTrash2, FiClock, FiArrowRight } from 'react-icons/fi';
 
 const AdminFlightsPage = () => {
+  const navigate = useNavigate();
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,6 +25,24 @@ const AdminFlightsPage = () => {
     fetchFlights();
   }, []);
 
+  const handleDeleteFlight = async (id) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa chuyến bay này?')) return;
+
+    try {
+      await flightService.delete(id);
+      setFlights(flights.filter((flight) => flight.id !== id));
+      toast.success('Xóa chuyến bay thành công!');
+    } catch (err) {
+      console.error('Delete flight failed:', err);
+      toast.error('Xóa chuyến bay thất bại: ' + (err.message || 'Vui lòng thử lại'));
+    }
+  };
+
+  const handleEditFlight = (id) => {
+    console.log('Editing flight with ID:', id);
+    navigate(`/admin/flights/${id}/edit`);
+  };
+
   if (loading) return <div className="flex justify-center items-center h-64"><Spinner size="lg" /></div>;
 
   return (
@@ -32,7 +53,10 @@ const AdminFlightsPage = () => {
           <h1 className="text-3xl font-bold text-text-primary font-serif">Quản lý Chuyến bay</h1>
           <p className="text-text-secondary mt-1">Kiểm soát các chuyến bay, hãng hàng không và lịch trình.</p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button
+          className="flex items-center gap-2"
+          onClick={() => navigate('/admin/flights/add')}
+        >
           <FiPlus /> Thêm Chuyến Bay
         </Button>
       </div>
@@ -97,10 +121,18 @@ const AdminFlightsPage = () => {
                   {/* Cột Hành động */}
                   <td className="p-4 text-right">
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Sửa">
+                      <button
+                        onClick={() => handleEditFlight(flight.id)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Sửa"
+                      >
                         <FiEdit2 />
                       </button>
-                      <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Xóa">
+                      <button
+                        onClick={() => handleDeleteFlight(flight.id)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Xóa"
+                      >
                         <FiTrash2 />
                       </button>
                     </div>

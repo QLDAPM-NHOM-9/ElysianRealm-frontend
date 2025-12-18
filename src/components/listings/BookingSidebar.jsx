@@ -2,18 +2,20 @@ import React from 'react';
 import { FiStar } from 'react-icons/fi';
 
 // Component con: Tóm tắt đơn hàng
-const OrderSummary = ({ title, subTitle, imageUrl }) => (
+const OrderSummary = ({ title, subTitle, imageUrl, showReviews = true }) => (
   <div className="flex gap-4">
     <img src={imageUrl} alt={title} className="w-28 h-20 rounded-lg object-cover" />
     <div>
       <p className="text-sm text-text-secondary">Economy</p>
       <h4 className="font-bold text-text-primary">{title}</h4>
-      <div className="flex items-center gap-2 text-sm mt-1">
-        <span className="flex items-center gap-1 text-sm font-medium text-brand-primary">
-          4.2 <FiStar className="w-3 h-3 fill-current" />
-        </span>
-        <span className="text-text-secondary">Very Good (54 reviews)</span>
-      </div>
+      {showReviews && (
+        <div className="flex items-center gap-2 text-sm mt-1">
+          <span className="flex items-center gap-1 text-sm font-medium text-brand-primary">
+            4.2 <FiStar className="w-3 h-3 fill-current" />
+          </span>
+          <span className="text-text-secondary">Very Good (54 reviews)</span>
+        </div>
+      )}
     </div>
   </div>
 );
@@ -30,14 +32,15 @@ const PriceRow = ({ label, value, isLast = false, isTotal = false }) => (
   </div>
 );
 
-const BookingSidebar = ({ orderDetails, priceDetails }) => {
+const BookingSidebar = ({ orderDetails, priceDetails, showReviews = true }) => {
   return (
     <aside className="w-full lg:w-96 bg-bg-primary p-6 rounded-lg shadow-sm sticky top-28">
       {/* Tóm tắt đơn hàng */}
-      <OrderSummary 
+      <OrderSummary
         title={orderDetails.title}
         subTitle={orderDetails.subTitle}
         imageUrl={orderDetails.imageUrl}
+        showReviews={showReviews}
       />
       
       <p className="text-xs text-text-secondary my-4">

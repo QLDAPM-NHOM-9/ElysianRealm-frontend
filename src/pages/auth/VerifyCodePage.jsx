@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiChevronLeft, FiEye } from 'react-icons/fi';
+import Input from '../../components/common/Input.jsx';
+import Button from '../../components/common/Button.jsx';
 
 const VerifyCodePage = () => {
   const navigate = useNavigate();
@@ -27,32 +29,19 @@ const VerifyCodePage = () => {
       {/* Form */}
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
-          <label className="block text-sm font-medium text-text-primary mb-2" htmlFor="code">
-            Enter Code
-          </label>
-          <div className="relative">
-            <input
-              type="text"
-              id="code"
-              placeholder="7789BM6X"
-              className="w-full px-4 py-3 border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              defaultValue="7789BM6X"
-            />
-            <button
-              type="button"
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-text-secondary"
-            >
-              <FiEye />
-            </button>
-          </div>
+          <Input
+            type="text"
+            id="code"
+            label="Enter Code"
+            placeholder="7789BM6X"
+            defaultValue="7789BM6X"
+            iconRight={<button type="button" className="text-text-secondary"><FiEye /></button>}
+          />
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-brand-primary text-white py-3 rounded-lg font-semibold shadow-md hover:bg-opacity-90 transition-all"
-        >
+        <Button type="submit">
           Verify
-        </button>
+        </Button>
       </form>
 
       {/* Link Resend */}

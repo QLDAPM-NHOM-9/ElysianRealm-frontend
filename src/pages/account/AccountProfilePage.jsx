@@ -1,15 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../../components/common/Button.jsx';
 import Input from '../../components/common/Input.jsx';
+import { useAuth } from '../../contexts/AuthContext.jsx';
+import authService from '../../services/authService.js';
 
 // Component con: Hàng thông tin (Có chế độ Edit)
 const InfoRow = ({ label, value, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(value);
+  const [isLoading, setIsLoading] = useState(false);
+  const { refreshUser } = useAuth();
 
-  const handleSave = () => {
-    onSave(tempValue);
-    setIsEditing(false);
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      let updateData = {};
+      if (label === 'Name') {
+        updateData = { name: tempValue };
+      } else if (label === 'Email') {
+        updateData = { email: tempValue };
+      } else if (label === 'Password' && tempValue !== '••••••••••••') {
+        updateData = { password: tempValue };
+      } else if (label === 'Phone number') {
+        // Phone not supported in backend yet, skip API call
+        onSave(tempValue);
+        setIsEditing(false);
+        setIsLoading(false);
+        return;
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        await authService.updateProfile(updateData);
+        // Refresh user data in context after successful update
+        await refreshUser();
+      }
+
+      onSave(tempValue);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      // Optionally, show error to user
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -36,8 +69,10 @@ const InfoRow = ({ label, value, onSave }) => {
       <div>
         {isEditing ? (
           <div className="flex gap-2">
-            <button onClick={handleSave} className="text-brand-primary font-medium text-sm hover:underline">Save</button>
-            <button onClick={handleCancel} className="text-text-secondary font-medium text-sm hover:underline">Cancel</button>
+            <button onClick={handleSave} disabled={isLoading} className="text-brand-primary font-medium text-sm hover:underline disabled:opacity-50">
+              {isLoading ? 'Saving...' : 'Save'}
+            </button>
+            <button onClick={handleCancel} disabled={isLoading} className="text-text-secondary font-medium text-sm hover:underline disabled:opacity-50">Cancel</button>
           </div>
         ) : (
           <button 
@@ -53,15 +88,39 @@ const InfoRow = ({ label, value, onSave }) => {
 };
 
 const AccountProfilePage = () => {
+  const { user } = useAuth();
   // State lưu thông tin cá nhân
   const [profile, setProfile] = useState({
-    name: 'John Doe',
-    email: 'john.doe@gmail.com',
+    name: '',
+    email: '',
     password: '••••••••••••',
-    phone: '+1 000-000-0000',
-    address: 'St 32 main downtown, Los Angeles, California, USA',
-    dob: '01-01-1992'
+    phone: '',
+
+
   });
+
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user profile on component mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await authService.getCurrentUser();
+        const userData = response;
+        setProfile(prev => ({
+          ...prev,
+          name: userData.name || '',
+          email: userData.email || ''
+        }));
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   // Hàm cập nhật từng trường
   const updateField = (field, newValue) => {
@@ -92,16 +151,6 @@ const AccountProfilePage = () => {
           label="Phone number" 
           value={profile.phone} 
           onSave={(val) => updateField('phone', val)} 
-        />
-        <InfoRow 
-          label="Address" 
-          value={profile.address} 
-          onSave={(val) => updateField('address', val)} 
-        />
-        <InfoRow 
-          label="Date of birth" 
-          value={profile.dob} 
-          onSave={(val) => updateField('dob', val)} 
         />
       </div>
     </div>

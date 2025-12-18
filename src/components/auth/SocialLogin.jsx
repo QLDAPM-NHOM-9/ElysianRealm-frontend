@@ -2,6 +2,7 @@ import React from 'react';
 import { FaFacebookF, FaApple } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import Button from '../common/Button.jsx';
+import toast from 'react-hot-toast';
 
 const SocialLogin = () => {
   
@@ -15,8 +16,7 @@ const SocialLogin = () => {
     // window.location.href = `${API_URL.replace('/api/v1', '')}/oauth2/authorization/${provider}`;
     
     // TODO: Implement OAuth2 flow when backend endpoint is ready
-    alert(`Social login with ${provider} not yet implemented`);
-    alert(`Tính năng đăng nhập ${provider} sẽ được kết nối với Backend Spring Boot.`);
+    toast.warning(`Tính năng đăng nhập ${provider} sẽ được kết nối với Backend Spring Boot.`);
   };
 
   return (

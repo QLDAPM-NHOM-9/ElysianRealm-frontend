@@ -108,6 +108,89 @@ export const adminService = {
       throw error.response?.data || error;
     }
   },
+
+  /**
+   * Get chart data for dashboard
+   * @returns {Promise<Object>}
+   */
+  getChartData: async () => {
+    try {
+      const response = await axiosClient.get('/admin/chart-data');
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
+   * Get all users
+   * @returns {Promise<Array>}
+   */
+  getUsers: async () => {
+    try {
+      const response = await axiosClient.get('/admin/users');
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
+   * Create new user (Admin only)
+   * @param {Object} userData - {email, password, name, role, avatar}
+   * @returns {Promise<Object>}
+   */
+  createUser: async (userData) => {
+    try {
+      const response = await axiosClient.post('/admin/users', userData);
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
+   * Update user (Admin only)
+   * @param {string|number} id - User ID
+   * @param {Object} userData - {name, email, role, avatar, isActive}
+   * @returns {Promise<Object>}
+   */
+  updateUser: async (id, userData) => {
+    try {
+      const response = await axiosClient.put(`/admin/users/${id}`, userData);
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
+   * Delete user (Admin only)
+   * @param {string|number} id - User ID
+   * @returns {Promise<Object>}
+   */
+  deleteUser: async (id) => {
+    try {
+      const response = await axiosClient.delete(`/admin/users/${id}`);
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
+   * Toggle user status (Admin only)
+   * @param {string|number} id - User ID
+   * @returns {Promise<Object>}
+   */
+  toggleUserStatus: async (id) => {
+    try {
+      const response = await axiosClient.patch(`/admin/users/${id}/toggle-status`);
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
 };
 
 /**
@@ -115,12 +198,47 @@ export const adminService = {
  */
 export const reviewService = {
   /**
+   * Create new review
+   * @param {Object} reviewData - {type: string, itemId: number, rating: number, text: string, author: string, avatar: string}
+   * @returns {Promise<Object>}
+   */
+  create: async (reviewData) => {
+    try {
+      console.log('Sending review data:', reviewData);
+      const response = await axiosClient.post('/reviews/json', reviewData);
+      console.log('Review creation response:', response);
+      return response.data || response;
+    } catch (error) {
+      console.error('Review creation error:', error);
+      console.error('Error response:', error.response);
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
    * Get featured reviews for homepage
    * @returns {Promise<Array>}
    */
   getFeatured: async () => {
     try {
       const response = await axiosClient.get('/reviews/featured');
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
+   * Get reviews by item ID and type
+   * @param {string} id - Item ID
+   * @param {string} type - Item type (TOUR, FLIGHT, etc.)
+   * @returns {Promise<Array>}
+   */
+  getReviewsByItem: async (id, type) => {
+    try {
+      const response = await axiosClient.get(`/reviews/item/${id}`, {
+        params: { type }
+      });
       return response.data || response;
     } catch (error) {
       throw error.response?.data || error;

@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SocialLogin from '../../components/auth/SocialLogin.jsx';
 import { FiChevronLeft } from 'react-icons/fi';
+import Input from '../../components/common/Input.jsx';
+import Button from '../../components/common/Button.jsx';
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -28,24 +30,18 @@ const ForgotPasswordPage = () => {
       {/* Form */}
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
-          <label className="block text-sm font-medium text-text-primary mb-2" htmlFor="email">
-            Email
-          </label>
-          <input
+          <Input
             type="email"
             id="email"
+            label="Email"
             placeholder="john.doe@gmail.com"
-            className="w-full px-4 py-3 border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
             defaultValue="john.doe@gmail.com"
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-brand-primary text-white py-3 rounded-lg font-semibold shadow-md hover:bg-opacity-90 transition-all"
-        >
+        <Button type="submit">
           Submit
-        </button>
+        </Button>
       </form>
 
       {/* Social Login (từ design) */}

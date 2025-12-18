@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { FiChevronRight, FiHeart, FiShare2, FiStar, FiMapPin, FiClock, FiCalendar, FiCheckCircle } from 'react-icons/fi';
 import { IoPaperPlaneOutline } from 'react-icons/io5';
 import Button from '../../components/common/Button.jsx';
 import Spinner from '../../components/common/Spinner.jsx';
 import tourService from '../../services/tourService.js';
 import flightService from '../../services/flightService.js';
+import { useAuth } from '../../contexts/AuthContext.jsx';
+
+// Import review service
+import { reviewService } from '../../services/api.js';
 
 // Component con: Mục lịch trình
 const ItineraryItem = ({ day, description }) => (
@@ -24,14 +29,20 @@ const ItineraryItem = ({ day, description }) => (
 );
 
 // Component con: Thẻ review (Tái sử dụng)
-const ReviewCard = ({ user, text, rating }) => (
+const ReviewCard = ({ author, text, rating, avatar, createdAt }) => (
   <div className="border-b border-border-primary py-4">
     <div className="flex justify-between items-center mb-2">
       <div className="flex items-center gap-3">
-        <img src={`https://ui-avatars.com/api/?name=${user}&background=random`} alt={user} className="w-10 h-10 rounded-full" />
+        <img
+          src={avatar || `https://ui-avatars.com/api/?name=${author}&background=random`}
+          alt={author}
+          className="w-10 h-10 rounded-full object-cover"
+        />
         <div>
-          <h5 className="font-semibold text-text-primary">{user}</h5>
-          <p className="text-sm text-text-secondary">15/10/2025</p>
+          <h5 className="font-semibold text-text-primary">{author}</h5>
+          <p className="text-sm text-text-secondary">
+            {createdAt ? new Date(createdAt).toLocaleDateString() : 'Recent'}
+          </p>
         </div>
       </div>
       <div className="flex items-center gap-1 text-sm font-medium bg-brand-primary text-white py-1 px-2 rounded">
@@ -44,9 +55,14 @@ const ReviewCard = ({ user, text, rating }) => (
 
 const TourDetailPage = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const [tour, setTour] = useState(null);
   const [flight, setFlight] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
 
   useEffect(() => {
     const fetchTour = async () => {
@@ -54,7 +70,7 @@ const TourDetailPage = () => {
       try {
         const data = await tourService.getById(id);
         setTour(data);
-        
+
         // Tour LUÔN có flight, fetch flight details
         if (data.flightId) {
           try {
@@ -70,8 +86,59 @@ const TourDetailPage = () => {
         setLoading(false);
       }
     };
+
+    const fetchReviews = async () => {
+      setReviewsLoading(true);
+      try {
+        const reviewsData = await reviewService.getReviewsByItem(id, 'TOUR');
+        setReviews(reviewsData);
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+
+    const checkFavoriteStatus = async () => {
+      if (user) {
+        try {
+          const isFav = await tourService.checkIsFavorite(id);
+          setIsFavorite(isFav);
+        } catch (error) {
+          console.error("Failed to check favorite:", error);
+        }
+      }
+    };
+
     fetchTour();
-  }, [id]);
+    fetchReviews();
+    checkFavoriteStatus();
+  }, [id, user]);
+
+  const handleFavoriteClick = async () => {
+    if (!user) {
+      toast.error("Vui lòng đăng nhập để thêm vào yêu thích");
+      return;
+    }
+
+    setFavoriteLoading(true);
+    try {
+      if (isFavorite) {
+        await tourService.removeFromFavorites(id);
+        setIsFavorite(false);
+        toast.success("Đã xóa khỏi danh sách yêu thích");
+      } else {
+        await tourService.addToFavorites(id);
+        setIsFavorite(true);
+        toast.success("Đã thêm vào danh sách yêu thích");
+      }
+    } catch (error) {
+      console.error("Failed to toggle favorite:", error);
+      toast.error("Không thể cập nhật danh sách yêu thích. Vui lòng thử lại.");
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
 
   if (loading) return <div className="h-screen flex justify-center items-center"><Spinner size="lg" /></div>;
   if (!tour) return <div className="h-screen flex justify-center items-center text-xl">Tour không tìm thấy!</div>;
@@ -111,9 +178,17 @@ const TourDetailPage = () => {
         </div>
         <div className="text-right flex-shrink-0">
           <p className="text-xs text-text-secondary">giá từ</p>
-          <p className="text-3xl font-bold text-brand-secondary">${tour.price}<span className="text-lg font-normal text-text-secondary">/khách</span></p>
+          <p className="text-3xl font-bold text-brand-secondary">${Math.round(tour.price / 23000).toLocaleString()}<span className="text-lg font-normal text-text-secondary">/khách</span></p>
           <div className="flex gap-2 mt-2">
-            <Button variant="outline" isIconOnly={true} className="w-12 h-12 rounded-lg"><FiHeart /></Button>
+            <Button
+              variant={isFavorite ? "primary" : "outline"}
+              isIconOnly={true}
+              className="w-12 h-12 rounded-lg"
+              onClick={handleFavoriteClick}
+              disabled={favoriteLoading}
+            >
+              {favoriteLoading ? <Spinner size="sm" /> : <FiHeart className={isFavorite ? 'fill-current' : ''} />}
+            </Button>
             <Button variant="outline" isIconOnly={true} className="w-12 h-12 rounded-lg"><FiShare2 /></Button>
             <Link to="/tour-booking" state={{ tour }}> {/* Truyền data tour sang trang booking */}
               <Button variant="primary" className="px-6 h-12 rounded-lg">Đặt ngay</Button>
@@ -228,10 +303,28 @@ const TourDetailPage = () => {
       {/* Phần Reviews */}
       <div>
         <h3 className="text-2xl font-bold text-text-primary mb-4">Đánh giá từ khách hàng</h3>
-        <div className="space-y-4">
-          <ReviewCard user="Minh Anh" rating={5.0} text="Chuyến đi rất tuyệt vời, hướng dẫn viên nhiệt tình. Đồ ăn ngon, khách sạn sạch sẽ." />
-          <ReviewCard user="Thanh Tùng" rating={4.5} text="Cảnh đẹp, lịch trình hợp lý không quá mệt. Sẽ ủng hộ lần sau." />
-        </div>
+        {reviewsLoading ? (
+          <div className="flex justify-center py-8">
+            <Spinner size="lg" />
+          </div>
+        ) : reviews.length > 0 ? (
+          <div className="space-y-4">
+            {reviews.map((review) => (
+              <ReviewCard
+                key={review.id}
+                author={review.author}
+                text={review.text}
+                rating={review.rating}
+                avatar={review.avatar}
+                createdAt={review.createdAt}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-text-secondary">
+            Chưa có đánh giá nào cho tour này.
+          </div>
+        )}
       </div>
     </div>
   );
