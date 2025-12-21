@@ -130,7 +130,10 @@ const Header = () => {
                 className="flex items-center gap-2 pl-4 border-l border-border-primary hover:opacity-80"
               >
                 <img
-                  src="https://via.placeholder.com/32"
+                  src={user.avatar
+                    ? user.avatar
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email)}&background=random&size=32`
+                  }
                   alt={user.name || user.email}
                   className="w-8 h-8 rounded-full object-cover"
                 />

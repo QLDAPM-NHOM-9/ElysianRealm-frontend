@@ -111,20 +111,20 @@ const FlightListingPage = () => {
           {/* Header kết quả */}
           <div className="flex justify-between items-center mb-4">
             <p className="text-text-secondary">
-              Showing {filteredAndSortedFlights.length} of <span className="text-brand-primary font-medium">{flights.length} places</span>
+              Hiển thị {filteredAndSortedFlights.length} trong tổng số <span className="text-brand-primary font-medium">{flights.length} chuyến bay</span>
             </p>
-            
+
             {/* Dropdown sắp xếp đơn giản */}
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Sort by:</span>
+              <span className="text-sm font-medium">Sắp xếp theo:</span>
               <Select
                 className="inline-block w-auto"
                 selectClassName="border-none bg-transparent font-semibold text-text-primary focus:ring-0 cursor-pointer"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
               >
-                <option value="price-asc">Cheapest First</option>
-                <option value="price-desc">Expensive First</option>
+                <option value="price-asc">Giá thấp nhất</option>
+                <option value="price-desc">Giá cao nhất</option>
               </Select>
             </div>
           </div>
@@ -145,14 +145,14 @@ const FlightListingPage = () => {
           ) : (
             // Hiển thị thông báo nếu không tìm thấy
             <div className="text-center py-12 text-text-secondary">
-              No flights found matching your filters.
+              Không tìm thấy chuyến bay nào phù hợp với bộ lọc của bạn.
             </div>
           )}
 
           {/* Nút Show more (Chỉ hiện khi có dữ liệu) */}
           {!loading && filteredAndSortedFlights.length > 0 && (
             <Button type="button" className="w-full mt-8">
-              Show more results
+              Xem thêm kết quả
             </Button>
           )}
         </main>

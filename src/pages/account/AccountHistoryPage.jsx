@@ -49,7 +49,11 @@ const FlightTicketCard = ({ data }) => (
            data.status === 'CANCELLED' ? 'Đã hủy' : 'Sắp tới'}
         </p>
       </div>
-      <Button variant="secondary" className="font-medium py-2 px-4 shadow-none">
+      <Button
+        variant="secondary"
+        className="font-medium py-2 px-4 shadow-none"
+        onClick={() => window.open(`/flight-ticket/${data.id}`, '_blank')}
+      >
         <FiDownload />
         <span className="hidden sm:inline">Vé điện tử</span>
       </Button>
@@ -287,13 +291,26 @@ const AccountHistoryPage = () => {
                   duration: tour.duration
                 };
               } else if (booking.type === 'FLIGHT') {
-                // Fetch flight details for FLIGHT bookings (simplified for now)
-                itemDetails = {
-                  airline: 'Unknown Airline',
-                  from: 'Unknown',
-                  to: 'Unknown',
-                  logoUrl: '/default-flight-logo.png'
-                };
+                // Parse flight details from booking details JSON string
+                try {
+                  const flightDetails = JSON.parse(booking.details);
+                  itemDetails = {
+                    airline: flightDetails.airline || 'Unknown Airline',
+                    from: flightDetails.from || 'Unknown',
+                    to: flightDetails.to || 'Unknown',
+                    logoUrl: flightDetails.img || '/default-flight-logo.png',
+                    flightNumber: flightDetails.flightNumber || 'N/A',
+                    time: flightDetails.time || ''
+                  };
+                } catch (parseError) {
+                  console.warn('Failed to parse flight details:', parseError);
+                  itemDetails = {
+                    airline: 'Unknown Airline',
+                    from: 'Unknown',
+                    to: 'Unknown',
+                    logoUrl: '/default-flight-logo.png'
+                  };
+                }
               }
 
               return {

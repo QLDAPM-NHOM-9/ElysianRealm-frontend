@@ -79,7 +79,7 @@ const FlightCard = ({
           <div>
             <h3 className="text-lg font-bold text-text-primary">{airline}</h3>
             <p className="text-sm text-text-secondary">
-              {flightNumber && `Flight ${flightNumber}`}
+              {formatDate(departureTime)} • Bay thẳng • {formatDuration(duration)}
             </p>
           </div>
         </div>
@@ -126,7 +126,7 @@ const FlightCard = ({
           </div>
           {availableSeats && (
             <div className="text-brand-primary font-semibold">
-              {availableSeats} seats available
+              {availableSeats} ghế trống
             </div>
           )}
         </div>
@@ -134,9 +134,9 @@ const FlightCard = ({
         {/* Price and booking button */}
         <div className="flex justify-between items-end mt-auto">
           <div className="text-left">
-            <p className="text-xs text-text-secondary">starting from</p>
-            <p className="text-2xl font-bold text-brand-secondary">${price}<span className="text-sm font-normal text-text-secondary">/person</span></p>
-            <p className="text-xs text-text-secondary">Economy</p>
+            <p className="text-xs text-text-secondary">bắt đầu từ</p>
+            <p className="text-2xl font-bold text-brand-secondary">${price}<span className="text-sm font-normal text-text-secondary">/người</span></p>
+            <p className="text-xs text-text-secondary">Phổ thông</p>
           </div>
 
           <Button
@@ -144,7 +144,7 @@ const FlightCard = ({
             className="px-8"
             onClick={handleBooking}
           >
-            Book Now
+            Đặt ngay
           </Button>
         </div>
       </div>

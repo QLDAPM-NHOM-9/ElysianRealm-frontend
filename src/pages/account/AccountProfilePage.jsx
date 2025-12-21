@@ -21,6 +21,8 @@ const InfoRow = ({ label, value, onSave }) => {
         updateData = { email: tempValue };
       } else if (label === 'Password' && tempValue !== '••••••••••••') {
         updateData = { password: tempValue };
+      } else if (label === 'Avatar') {
+        updateData = { avatar: tempValue };
       } else if (label === 'Phone number') {
         // Phone not supported in backend yet, skip API call
         onSave(tempValue);
@@ -95,8 +97,7 @@ const AccountProfilePage = () => {
     email: '',
     password: '••••••••••••',
     phone: '',
-
-
+    avatar: ''
   });
 
   const [loading, setLoading] = useState(true);
@@ -110,7 +111,8 @@ const AccountProfilePage = () => {
         setProfile(prev => ({
           ...prev,
           name: userData.name || '',
-          email: userData.email || ''
+          email: userData.email || '',
+          avatar: userData.avatar || ''
         }));
       } catch (error) {
         console.error('Failed to fetch user profile:', error);
@@ -129,28 +131,31 @@ const AccountProfilePage = () => {
 
   return (
     <div>
-      <h3 className="text-2xl font-bold text-text-primary mb-4">Account</h3>
-      
       <div className="divide-y divide-border-primary">
-        <InfoRow 
-          label="Name" 
-          value={profile.name} 
-          onSave={(val) => updateField('name', val)} 
+        <InfoRow
+          label="Name"
+          value={profile.name}
+          onSave={(val) => updateField('name', val)}
         />
-        <InfoRow 
-          label="Email" 
-          value={profile.email} 
-          onSave={(val) => updateField('email', val)} 
+        <InfoRow
+          label="Email"
+          value={profile.email}
+          onSave={(val) => updateField('email', val)}
         />
-        <InfoRow 
-          label="Password" 
-          value={profile.password} 
-          onSave={(val) => updateField('password', val)} 
+        <InfoRow
+          label="Avatar"
+          value={profile.avatar}
+          onSave={(val) => updateField('avatar', val)}
         />
-        <InfoRow 
-          label="Phone number" 
-          value={profile.phone} 
-          onSave={(val) => updateField('phone', val)} 
+        <InfoRow
+          label="Password"
+          value={profile.password}
+          onSave={(val) => updateField('password', val)}
+        />
+        <InfoRow
+          label="Phone number"
+          value={profile.phone}
+          onSave={(val) => updateField('phone', val)}
         />
       </div>
     </div>

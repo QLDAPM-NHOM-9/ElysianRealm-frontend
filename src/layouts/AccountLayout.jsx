@@ -3,8 +3,8 @@ import { Outlet, NavLink, Link } from 'react-router-dom';
 import { FiUpload, FiHome } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext.jsx';
 
-// Ảnh bìa mẫu
-const coverImageUrl = "https://images.unsplash.com/photo-1530789253388-582c481c54b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
+// Ảnh bìa mẫu - phù hợp với tông màu xanh dương/tím của brand
+const coverImageUrl = "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
 // Avatar mẫu
 const avatarUrl = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fDE?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80";
 
@@ -33,7 +33,7 @@ const AccountLayout = () => {
       <div className="container mx-auto px-4 max-w-5xl">
         
         {/* --- Phần Ảnh bìa & Avatar --- */}
-        <div className="relative h-48 md:h-64 rounded-b-2xl shadow-sm" style={{ backgroundImage: `url(${coverImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="relative h-48 md:h-64 rounded-b-2xl shadow-sm bg-gradient-to-r from-brand-primary via-blue-600 to-purple-600">
           
           {/* Nút Home */}
           <Link to="/" className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm text-text-primary text-sm font-medium py-2 px-3 rounded-lg flex items-center gap-2 shadow-sm hover:bg-white">
@@ -44,7 +44,14 @@ const AccountLayout = () => {
           {/* Avatar & Tên */}
           <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center">
             <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg overflow-hidden">
-              <img src={avatarUrl} alt="John Doe" className="w-full h-full object-cover" />
+              <img
+                src={user?.avatar
+                  ? user.avatar
+                  : `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || user?.email || 'User')}&background=random&size=128`
+                }
+                alt={user?.name || 'User'}
+                className="w-full h-full object-cover"
+              />
             </div>
             <h2 className="text-3xl font-bold text-text-primary mt-3">{user?.name || 'User'}</h2>
             <p className="text-text-secondary">{user?.email || 'user@example.com'}</p>

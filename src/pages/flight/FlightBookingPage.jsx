@@ -84,6 +84,14 @@ const FlightBookingPage = () => {
   console.log('FlightBookingPage - flightData from route state:', flightData);
   console.log('FlightBookingPage - location.state:', location.state);
 
+  // If no flight data, redirect back to flight listing
+  React.useEffect(() => {
+    if (!flightData.id) {
+      toast.error('Không tìm thấy thông tin chuyến bay. Vui lòng chọn chuyến bay trước.');
+      navigate('/flight-listing');
+    }
+  }, [flightData.id, navigate]);
+
   // Calculate order details from flight data
   const orderDetails = {
     title: flightData.airline || "Flight Booking",
@@ -104,20 +112,25 @@ const FlightBookingPage = () => {
     setIsProcessing(true);
     try {
       // Prepare booking data from flight info
+      const departureDate = flightData.departureTime
+        ? new Date(flightData.departureTime).toISOString().split('T')[0]
+        : new Date().toISOString().split('T')[0];
+
       const newBookingData = {
-        type: 'flight',
+        type: 'FLIGHT',
         itemId: flightData.id,
-        date: new Date().toISOString().split('T')[0],
+        date: departureDate,
         guests: 1,
         paymentMethod: 'credit_card',
-        details: {
+        details: JSON.stringify({
           from: flightData.from || 'Unknown',
           to: flightData.to || 'Unknown',
           airline: flightData.airline || 'Unknown',
           flightNumber: flightData.flightNumber || 'N/A',
           time: `${flightData.departureTime || ''} — ${flightData.arrivalTime || ''}`,
+          duration: flightData.duration || 0,
           img: flightData.logoUrl || 'https://via.placeholder.com/50'
-        }
+        })
       };
 
       // 2. Gọi API tạo đơn hàng

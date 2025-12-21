@@ -5,27 +5,39 @@ import { homeApi } from '../../services/api.js';
 import Spinner from '../common/Spinner.jsx';
 
 // Component thẻ con
-const ReviewCard = ({ title, text, rating, user, location, img }) => (
+const ReviewCard = ({ author, text, rating, avatar }) => (
   <div className="bg-bg-primary rounded-lg shadow-sm h-full flex flex-col">
     <div className="p-6 flex-1">
-      <h4 className="text-xl font-bold text-text-primary mb-3">{title}</h4>
+      <h4 className="text-xl font-bold text-text-primary mb-3">Đánh giá từ {author}</h4>
       <p className="text-text-secondary mb-4 line-clamp-3">{text}</p>
-      
+
       <div className="flex items-center mb-4">
         {[...Array(5)].map((_, i) => (
-          <FiStar key={i} className={`fill-current ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`} />
+          <FiStar key={i} className={`fill-current ${i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'}`} />
         ))}
+        <span className="ml-2 text-sm text-text-secondary">({rating}/5)</span>
       </div>
 
       <div className="flex items-center gap-3 mb-4">
-        <img src="https://via.placeholder.com/40" alt={user} className="w-10 h-10 rounded-full object-cover" />
+        <img
+          src={avatar
+            ? avatar
+            : `https://ui-avatars.com/api/?name=${encodeURIComponent(author)}&background=random&size=40`
+          }
+          alt={author}
+          className="w-10 h-10 rounded-full object-cover"
+        />
         <div>
-          <h5 className="font-semibold text-text-primary">{user}</h5>
-          <p className="text-sm text-text-secondary">{location}</p>
+          <h5 className="font-semibold text-text-primary">{author}</h5>
+          <p className="text-sm text-text-secondary">Khách hàng</p>
         </div>
       </div>
     </div>
-    <img src={img} alt="Review image" className="w-full h-56 object-cover rounded-b-lg" />
+    <img
+      src={`https://picsum.photos/600/400?random=${Math.floor(Math.random() * 1000)}`}
+      alt="Review image"
+      className="w-full h-56 object-cover rounded-b-lg"
+    />
   </div>
 );
 
@@ -85,9 +97,9 @@ const Reviews = () => {
   return (
     <section className="container mx-auto px-4 py-16">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-text-primary">Reviews</h2>
+        <h2 className="text-3xl font-bold text-text-primary">Đánh giá từ khách hàng</h2>
         <Link to="#" className="text-brand-primary font-medium hover:underline">
-          See all
+          Xem tất cả
         </Link>
       </div>
 
