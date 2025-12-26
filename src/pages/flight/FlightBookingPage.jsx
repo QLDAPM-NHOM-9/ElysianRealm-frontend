@@ -185,7 +185,7 @@ const FlightBookingPage = () => {
               <button
                 onClick={handleCreateBooking}
                 disabled={isProcessing}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="w-full bg-brand-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 {isProcessing ? 'Đang xử lý...' : 'Xác nhận và chọn phương thức thanh toán'}
               </button>
