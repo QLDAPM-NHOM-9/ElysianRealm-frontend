@@ -109,15 +109,15 @@ const FlightBookingPage = () => {
   const handleCreateBooking = async () => {
     setIsProcessing(true);
     try {
-      // Prepare booking data from flight info
-      const departureDate = flightData.departureTime
-        ? new Date(flightData.departureTime).toISOString().split('T')[0]
-        : new Date().toISOString().split('T')[0];
+      // Calculate future date (tomorrow) since backend requires @Future validation
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const bookingDate = tomorrow.toISOString().split('T')[0];
 
       const newBookingData = {
         type: 'FLIGHT',
         itemId: flightData.id,
-        date: departureDate,
+        date: bookingDate, // Future date required by backend
         guests: 1,
         paymentMethod: 'pending', // Will be updated after payment
         paymentCompleted: false,
