@@ -47,7 +47,6 @@ import FlightBookingPage from '../pages/flight/FlightBookingPage.jsx';
 import FlightTicketPage from '../pages/flight/FlightTicketPage.jsx';
 
 // Tour Pages
-import TourSearchPage from '../pages/tour/TourSearchPage.jsx';
 import TourListingPage from '../pages/tour/TourListingPage.jsx';
 import TourDetailPage from '../pages/tour/TourDetailPage.jsx';
 import TourBookingPage from '../pages/tour/TourBookingPage.jsx';
@@ -65,14 +64,12 @@ const AppRouter = () => {
         <Route index element={<HomePage />} />
         
         {/* --- FLIGHT ROUTES --- */}
-        <Route path="flights" element={<FlightSearchPage />} />
         <Route path="flight-listing" element={<FlightListingPage />} />
         <Route path="flight-detail/:id" element={<FlightDetailPage />} />
         <Route path="flight-booking" element={<FlightBookingPage />} />
         <Route path="flight-ticket/:id" element={<FlightTicketPage />} />
 
-        {/* --- TOUR ROUTES (ĐÃ CẬP NHẬT) --- */}
-        <Route path="tours" element={<TourSearchPage />} />
+        {/* --- TOUR ROUTES --- */}
         <Route path="tour-listing" element={<TourListingPage />} />
         <Route path="tour-detail/:id" element={<TourDetailPage />} />
         <Route path="tour-booking" element={<TourBookingPage />} />

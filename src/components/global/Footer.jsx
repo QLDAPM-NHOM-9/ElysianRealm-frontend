@@ -37,14 +37,14 @@ const FooterColumn = ({ title, links }) => (
 
 const Footer = () => {
   const destinations = [
-    { label: 'Hà Nội', path: '/tours' },
-    { label: 'Đà Nẵng', path: '/tours' },
-    { label: 'Hồ Chí Minh', path: '/tours' },
-    { label: 'Đà Lạt', path: '/tours' }
+    { label: 'Hà Nội', path: '/tour-listing?q=Hà Nội' },
+    { label: 'Đà Nẵng', path: '/tour-listing?q=Đà Nẵng' },
+    { label: 'Hồ Chí Minh', path: '/tour-listing?q=Hồ Chí Minh' },
+    { label: 'Đà Lạt', path: '/tour-listing?q=Đà Lạt' }
   ];
   const services = [
     { label: 'Đặt vé máy bay', path: '/flights' },
-    { label: 'Đặt tour du lịch', path: '/tours' }
+    { label: 'Đặt tour du lịch', path: '/tour-listing' }
   ];
 
   const about = [

@@ -21,14 +21,6 @@ const InfoRow = ({ label, value, onSave }) => {
         updateData = { email: tempValue };
       } else if (label === 'Password' && tempValue !== '••••••••••••') {
         updateData = { password: tempValue };
-      } else if (label === 'Avatar') {
-        updateData = { avatar: tempValue };
-      } else if (label === 'Phone number') {
-        // Phone not supported in backend yet, skip API call
-        onSave(tempValue);
-        setIsEditing(false);
-        setIsLoading(false);
-        return;
       }
 
       if (Object.keys(updateData).length > 0) {
@@ -95,9 +87,7 @@ const AccountProfilePage = () => {
   const [profile, setProfile] = useState({
     name: '',
     email: '',
-    password: '••••••••••••',
-    phone: '',
-    avatar: ''
+    password: '••••••••••••'
   });
 
   const [loading, setLoading] = useState(true);
@@ -111,8 +101,7 @@ const AccountProfilePage = () => {
         setProfile(prev => ({
           ...prev,
           name: userData.name || '',
-          email: userData.email || '',
-          avatar: userData.avatar || ''
+          email: userData.email || ''
         }));
       } catch (error) {
         console.error('Failed to fetch user profile:', error);
@@ -143,19 +132,9 @@ const AccountProfilePage = () => {
           onSave={(val) => updateField('email', val)}
         />
         <InfoRow
-          label="Avatar"
-          value={profile.avatar}
-          onSave={(val) => updateField('avatar', val)}
-        />
-        <InfoRow
           label="Password"
           value={profile.password}
           onSave={(val) => updateField('password', val)}
-        />
-        <InfoRow
-          label="Phone number"
-          value={profile.phone}
-          onSave={(val) => updateField('phone', val)}
         />
       </div>
     </div>

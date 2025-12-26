@@ -13,12 +13,16 @@ const ContactUsPage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleNameChange = (value) => {
+    setFormData(prev => ({ ...prev, name: value }));
+  };
+
+  const handleEmailChange = (value) => {
+    setFormData(prev => ({ ...prev, email: value }));
+  };
+
+  const handleMessageChange = (e) => {
+    setFormData(prev => ({ ...prev, message: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
@@ -69,7 +73,7 @@ const ContactUsPage = () => {
             label="Tên của bạn"
             placeholder="Nguyễn Văn A"
             value={formData.name}
-            onChange={handleChange}
+            onChange={handleNameChange}
             disabled={isLoading}
             className="mb-4"
             required
@@ -81,7 +85,7 @@ const ContactUsPage = () => {
             label="Email"
             placeholder="email@example.com"
             value={formData.email}
-            onChange={handleChange}
+            onChange={handleEmailChange}
             disabled={isLoading}
             className="mb-4"
             required
@@ -92,7 +96,7 @@ const ContactUsPage = () => {
               name="message"
               rows="4"
               value={formData.message}
-              onChange={handleChange}
+              onChange={handleMessageChange}
               disabled={isLoading}
               className="w-full px-4 py-3 border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
               placeholder="Bạn cần hỗ trợ gì?"
