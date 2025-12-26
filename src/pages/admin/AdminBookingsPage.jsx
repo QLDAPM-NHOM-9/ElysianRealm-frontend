@@ -240,7 +240,7 @@ const AdminBookingsPage = () => {
                     </td>
                     <td className="p-4">
                       <span className={`px-2 py-1 rounded text-xs font-medium ${booking.type?.toLowerCase() === 'flight' ? 'bg-purple-100 text-purple-700' : 'bg-orange-100 text-orange-700'}`}>
-                        {booking.type?.toLowerCase() === 'flight' ? 'Bay' : 'Tour'}
+                        {booking.type?.toLowerCase() === 'flight' ? 'Flight' : 'Tour'}
                       </span>
                     </td>
                     <td className="p-4">

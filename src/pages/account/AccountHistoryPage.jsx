@@ -12,6 +12,7 @@ import axiosClient from '../../services/axiosClient.js';
 // Component vé máy bay
 const FlightTicketCard = ({ data, onViewTicket, onPaymentClick }) => {
   const isPending = data.status === 'PENDING';
+  const isCancelled = data.status === 'CANCELLED';
 
   return (
   <div className="bg-bg-primary border border-border-primary rounded-lg p-4 flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
@@ -54,7 +55,9 @@ const FlightTicketCard = ({ data, onViewTicket, onPaymentClick }) => {
            data.status === 'CANCELLED' ? 'Đã hủy' : 'Đã hoàn thành'}
         </p>
       </div>
-      {isPending ? (
+      {isCancelled ? (
+        <span className="text-sm text-red-600 font-medium">Không thể xem</span>
+      ) : isPending ? (
         <Button
           variant="primary"
           className="font-medium py-2 px-4 shadow-none"
@@ -182,6 +185,7 @@ const ReviewModal = ({ isOpen, onClose, booking, onSubmitReview }) => {
 const TourBookingCard = ({ data, onReviewClick, hasReviewed, onViewTicket, onPaymentClick }) => {
   const canReview = (data.status === 'CONFIRMED' || data.status === 'COMPLETED') && !hasReviewed;
   const isPending = data.status === 'PENDING';
+  const isCancelled = data.status === 'CANCELLED';
 
   return (
     <div className="bg-bg-primary border border-border-primary rounded-lg p-4 flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
@@ -222,7 +226,9 @@ const TourBookingCard = ({ data, onReviewClick, hasReviewed, onViewTicket, onPay
           </p>
         </div>
         <div className="flex gap-2">
-          {isPending ? (
+          {isCancelled ? (
+            <span className="text-sm text-red-600 font-medium">Không thể xem</span>
+          ) : isPending ? (
             <Button
               variant="primary"
               className="font-medium py-2 px-4 shadow-none"
