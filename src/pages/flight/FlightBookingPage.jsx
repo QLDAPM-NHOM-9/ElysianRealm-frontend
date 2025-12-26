@@ -144,6 +144,7 @@ const FlightBookingPage = () => {
     } catch (error) {
       console.error('Booking failed:', error);
       toast.error('Không thể đặt vé. Vui lòng thử lại.');
+    } finally {
       setIsProcessing(false);
     }
   };
