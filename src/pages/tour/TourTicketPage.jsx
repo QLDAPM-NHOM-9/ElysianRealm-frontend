@@ -5,10 +5,12 @@ import { bookingService } from '../../services/api.js';
 import { tourService } from '../../services/tourService.js';
 import Spinner from '../../components/common/Spinner.jsx';
 import Button from '../../components/common/Button.jsx';
+import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const TourTicketPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [booking, setBooking] = useState(null);
   const [tour, setTour] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -197,9 +199,9 @@ const TourTicketPage = () => {
             <div>
               <h4 className="font-semibold text-gray-900 mb-2">Thông tin khách hàng</h4>
               <div className="space-y-2 text-gray-600">
-                <p><span className="font-medium">Email:</span> {booking.customerEmail || 'Chưa cập nhật'}</p>
-                <p><span className="font-medium">SĐT:</span> {booking.customerPhone || 'Chưa cập nhật'}</p>
-                <p><span className="font-medium">Tên:</span> {booking.customerName || 'Chưa cập nhật'}</p>
+                <p><span className="font-medium">Email:</span> {user?.email || 'Chưa cập nhật'}</p>
+                <p><span className="font-medium">SĐT:</span> {user?.phone || 'Chưa cập nhật'}</p>
+                <p><span className="font-medium">Tên:</span> {user?.name || 'Chưa cập nhật'}</p>
               </div>
             </div>
             <div>
