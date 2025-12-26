@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FiCheckCircle, FiCircle } from 'react-icons/fi';
 
 import Button from '../common/Button.jsx';
-import Spinner from '../common/Spinner.jsx'; // Import Spinner
+import Spinner from '../common/Spinner.jsx';
+import axiosClient from '../../services/axiosClient.js';
 
 // Component con: Nút chọn (Pay in full / Pay part now)
 const PaymentRadioOption = ({ title, description, isActive, onClick }) => (
@@ -78,33 +79,21 @@ const VNPayPayment = ({ bookingId, total, onSuccess, onCancel, isProcessing }) =
     try {
       setIsRedirecting(true);
 
-      const response = await fetch('/api/v1/payments/vnpay/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          bookingId: bookingId,
-          orderInfo: `Payment for booking ${bookingId}`,
-          amount: amountInVND // Send VND amount to backend
-        })
+      const response = await axiosClient.post('/payments/vnpay/create', {
+        bookingId: bookingId,
+        orderInfo: `Payment for booking ${bookingId}`,
+        amount: amountInVND // Send VND amount to backend
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to create payment URL');
-      }
-
-      const data = await response.json();
-
       // Redirect to VNPay payment page
-      window.location.href = data.paymentUrl;
+      window.location.href = response.data.paymentUrl;
 
     } catch (error) {
       console.error('VNPay payment error:', error);
       setIsRedirecting(false);
       // Handle error - show message to user
-      alert('Không thể tạo liên kết thanh toán. Vui lòng thử lại.');
+      const errorMessage = error.response?.data?.message || 'Không thể tạo liên kết thanh toán. Vui lòng thử lại.';
+      alert(errorMessage);
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FiCheckCircle, FiXCircle, FiLoader } from 'react-icons/fi';
 import Button from '../components/common/Button.jsx';
+import axiosClient from '../services/axiosClient.js';
 
 const PaymentReturnPage = () => {
   const [searchParams] = useSearchParams();
@@ -18,29 +19,11 @@ const PaymentReturnPage = () => {
           params[key] = value;
         }
 
-        // Send parameters to backend for verification
-        const response = await fetch('/api/v1/payments/vnpay-return', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          // Note: GET request with query parameters, but we can send them in the URL
+        // Send parameters to backend for verification using axiosClient
+        // axiosClient will handle the base URL and authorization headers
+        const result = await axiosClient.get('/payments/vnpay-return', {
+          params: params // axios will convert this to query parameters
         });
-
-        // Since we can't modify the URL that's redirected from VNPay,
-        // we need to call a different endpoint that accepts the parameters
-        const verifyResponse = await fetch('/api/v1/payments/vnpay-return?' + new URLSearchParams(params).toString(), {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-
-        if (!verifyResponse.ok) {
-          throw new Error('Payment verification failed');
-        }
-
-        const result = await verifyResponse.json();
 
         if (result.success) {
           setPaymentStatus('success');
@@ -55,7 +38,7 @@ const PaymentReturnPage = () => {
         setPaymentStatus('failed');
         setPaymentData({
           message: 'Không thể xác minh thanh toán. Vui lòng liên hệ hỗ trợ.',
-          error: error.message
+          error: error.response?.data?.message || error.message
         });
       }
     };
