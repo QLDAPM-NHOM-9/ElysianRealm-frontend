@@ -1,75 +1,104 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { useNavigate, useLocation } from 'react-router-dom';
+import Input from '../../components/common/Input.jsx';
+import Button from '../../components/common/Button.jsx';
+import Spinner from '../../components/common/Spinner.jsx';
+import toast from 'react-hot-toast';
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const location = useLocation();
+  const email = location.state?.email || sessionStorage.getItem('verifiedEmail') || '';
 
-  const handleSubmit = (e) => {
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic đổi mật khẩu...
-    // Sau khi thành công, điều hướng về trang Login
-    navigate('/login');
+    setError('');
+
+    if (!password) {
+      setError('Vui lòng nhập mật khẩu mới.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('Mật khẩu phải có ít nhất 8 ký tự.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Mật khẩu không khớp. Vui lòng kiểm tra lại.');
+      return;
+    }
+
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      setError('Mật khẩu phải chứa ít nhất 1 chữ in hoa, 1 chữ thường và 1 số.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // TODO: Call backend API to reset password
+      // const response = await authService.resetPassword(email, password);
+      
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      toast.success('Mật khẩu đã được đặt lại thành công!');
+      // Clear session storage
+      sessionStorage.removeItem('resetEmail');
+      sessionStorage.removeItem('verifiedEmail');
+      navigate('/login');
+    } catch (err) {
+      const message = err.message || 'Không thể đặt lại mật khẩu. Vui lòng thử lại.';
+      setError(message);
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="max-w-md mx-auto">
       {/* Header */}
-      <h2 className="text-4xl font-bold text-text-primary mb-2">Set a password</h2>
-      <p className="text-text-secondary mb-8">Your previous password has been reseted. Please set a new password for your account.</p>
+      <h2 className="text-4xl font-bold text-text-primary mb-2">Đặt mật khẩu mới</h2>
+      <p className="text-text-secondary mb-8">Mật khẩu cũ của bạn đã được đặt lại. Vui lòng đặt mật khẩu mới cho tài khoản của bạn.</p>
 
       {/* Form */}
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-text-primary mb-2" htmlFor="password">
-            Create Password
-          </label>
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              id="password"
-              placeholder="••••••••"
-              className="w-full px-4 py-3 border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-text-secondary"
-            >
-              {showPassword ? <FiEyeOff /> : <FiEye />}
-            </button>
-          </div>
-        </div>
+        <Input
+          type="password"
+          id="password"
+          label="Mật khẩu mới"
+          placeholder="Tối thiểu 8 ký tự, bao gồm chữ hoa, chữ thường và số"
+          value={password}
+          onChange={setPassword}
+          disabled={isLoading}
+          className="mb-6"
+          required
+        />
 
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-text-primary mb-2" htmlFor="confirmPassword">
-            Re-enter Password
-          </label>
-          <div className="relative">
-            <input
-              type={showConfirmPassword ? 'text' : 'password'}
-              id="confirmPassword"
-              placeholder="••••••••"
-              className="w-full px-4 py-3 border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-text-secondary"
-            >
-              {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
-            </button>
-          </div>
-        </div>
+        <Input
+          type="password"
+          id="confirmPassword"
+          label="Xác nhận mật khẩu"
+          placeholder="Nhập lại mật khẩu"
+          value={confirmPassword}
+          onChange={setConfirmPassword}
+          disabled={isLoading}
+          className="mb-6"
+          required
+        />
 
-        <button
-          type="submit"
-          className="w-full bg-brand-primary text-white py-3 rounded-lg font-semibold shadow-md hover:bg-opacity-90 transition-all"
-        >
-          Set password
-        </button>
+        {error && (
+          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+        )}
+
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? <Spinner size="sm" className="mx-auto" /> : 'Đặt mật khẩu'}
+        </Button>
       </form>
     </div>
   );

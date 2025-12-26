@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import SocialLogin from '../../components/auth/SocialLogin.jsx';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import Button from '../../components/common/Button.jsx';
@@ -52,13 +51,13 @@ const RegisterPage = () => {
 
     try {
       const response = await register({
-        fullName: `${lastName} ${firstName}`,
+        name: `${lastName} ${firstName}`,
         email,
         password,
       });
 
       // Navigate to payment or login
-      navigate('/register-payment', { state: { userEmail: email } });
+      navigate('/login');
     } catch (err) {
       const message = err.message || 'Đăng ký thất bại. Vui lòng thử lại.';
       setError(message);
@@ -81,7 +80,7 @@ const RegisterPage = () => {
             label="Họ"
             placeholder="Nguyễn"
             value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            onChange={setLastName}
             className="w-full sm:w-1/2"
             disabled={isLoading}
             required
@@ -91,7 +90,7 @@ const RegisterPage = () => {
             label="Tên"
             placeholder="Văn"
             value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            onChange={setFirstName}
             className="w-full sm:w-1/2"
             disabled={isLoading}
             required
@@ -104,7 +103,7 @@ const RegisterPage = () => {
           type="email"
           placeholder="nguyen.van@gmail.com"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={setEmail}
           className="mb-4"
           disabled={isLoading}
           required
@@ -116,7 +115,7 @@ const RegisterPage = () => {
           type={showPassword ? 'text' : 'password'}
           placeholder="••••••••"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={setPassword}
           className="mb-4"
           disabled={isLoading}
           required
@@ -137,7 +136,7 @@ const RegisterPage = () => {
           type={showConfirmPassword ? 'text' : 'password'}
           placeholder="••••••••"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          onChange={setConfirmPassword}
           className="mb-6"
           disabled={isLoading}
           required
@@ -180,9 +179,6 @@ const RegisterPage = () => {
           {isLoading ? <Spinner size="sm" className="mx-auto" /> : 'Tạo tài khoản'}
         </Button>
       </form>
-
-      {/* Social Login */}
-      <SocialLogin />
 
       {/* Link to Login */}
       <p className="text-center text-sm text-text-secondary mt-8">

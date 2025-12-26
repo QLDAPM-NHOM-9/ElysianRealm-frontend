@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import SocialLogin from '../../components/auth/SocialLogin.jsx';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import Button from '../../components/common/Button.jsx';
@@ -11,6 +10,7 @@ import Spinner from '../../components/common/Spinner.jsx';
 const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,9 +28,19 @@ const LoginPage = () => {
       const response = await login(email, password);
       const user = response.user;
 
-      // Redirect based on role
+      // Check if there's a redirect location from the state
+      const from = location.state?.from;
+      const tour = location.state?.tour;
+
+      // Redirect based on role or back to the original page
       if (user.role === 'ADMIN' || user.role === 'admin') {
         navigate('/admin');
+      } else if (from && tour) {
+        // Redirect back to booking page with tour data
+        navigate(from, { state: { tour }, replace: true });
+      } else if (from) {
+        // Redirect back to the original page
+        navigate(from, { replace: true });
       } else {
         navigate('/account/profile');
       }
@@ -60,7 +70,7 @@ const LoginPage = () => {
           type="email"
           placeholder="Nhập email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={setEmail}
           className="mb-4"
           disabled={isLoading}
           required
@@ -72,7 +82,7 @@ const LoginPage = () => {
           type={showPassword ? 'text' : 'password'}
           placeholder="••••••••"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={setPassword}
           disabled={isLoading}
           className="mb-6"
           required
@@ -108,9 +118,6 @@ const LoginPage = () => {
           {isLoading ? <Spinner size="sm" className="mx-auto" /> : 'Đăng nhập'}
         </Button>
       </form>
-
-      {/* Social Login */}
-      <SocialLogin />
 
       {/* Link to Register */}
       <p className="text-center text-sm text-text-secondary mt-8">

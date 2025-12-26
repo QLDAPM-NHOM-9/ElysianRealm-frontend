@@ -1,16 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import SocialLogin from '../../components/auth/SocialLogin.jsx';
 import { FiChevronLeft } from 'react-icons/fi';
+import Input from '../../components/common/Input.jsx';
+import Button from '../../components/common/Button.jsx';
+import Spinner from '../../components/common/Spinner.jsx';
+import toast from 'react-hot-toast';
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic gửi email...
-    // Sau khi gửi, điều hướng đến trang Verify Code
-    navigate('/verify-code');
+    setError('');
+    
+    if (!email) {
+      setError('Vui lòng nhập email của bạn.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // TODO: Call backend API to send password reset email
+      // const response = await authService.sendPasswordResetEmail(email);
+      
+      // For now, simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast.success('Vui lòng kiểm tra email để nhận mã xác thực');
+      // Store email in session for use in verify code page
+      sessionStorage.setItem('resetEmail', email);
+      navigate('/verify-code', { state: { email } });
+    } catch (err) {
+      const message = err.message || 'Không thể gửi email. Vui lòng thử lại.';
+      setError(message);
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -27,29 +56,26 @@ const ForgotPasswordPage = () => {
 
       {/* Form */}
       <form onSubmit={handleSubmit}>
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-text-primary mb-2" htmlFor="email">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            placeholder="john.doe@gmail.com"
-            className="w-full px-4 py-3 border border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
-            defaultValue="john.doe@gmail.com"
-          />
-        </div>
+        <Input
+          type="email"
+          id="email"
+          label="Email"
+          placeholder="john.doe@gmail.com"
+          value={email}
+          onChange={setEmail}
+          disabled={isLoading}
+          className="mb-6"
+          required
+        />
 
-        <button
-          type="submit"
-          className="w-full bg-brand-primary text-white py-3 rounded-lg font-semibold shadow-md hover:bg-opacity-90 transition-all"
-        >
-          Submit
-        </button>
+        {error && (
+          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+        )}
+
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? <Spinner size="sm" className="mx-auto" /> : 'Gửi mã xác thực'}
+        </Button>
       </form>
-
-      {/* Social Login (từ design) */}
-      <SocialLogin />
     </div>
   );
 };

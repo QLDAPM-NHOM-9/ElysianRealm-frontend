@@ -41,7 +41,11 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await authService.login(email, password);
-      const { token: newToken, user: userData } = response;
+
+      const { token: newToken, email: userEmail, role } = response;
+      // Fetch full user data including name
+      const currentUser = await authService.getCurrentUser();
+      const userData = currentUser.user || currentUser;
       
       setToken(newToken);
       setUser(userData);
@@ -97,6 +101,18 @@ export const AuthProvider = ({ children }) => {
     return !!token && !!user;
   };
 
+  /**
+   * Refresh user data from server
+   */
+  const refreshUser = async () => {
+    try {
+      const currentUser = await authService.getCurrentUser();
+      setUser(currentUser.user || currentUser);
+    } catch (error) {
+      console.error('Failed to refresh user:', error);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -109,6 +125,7 @@ export const AuthProvider = ({ children }) => {
         hasRole,
         isAdmin,
         isAuthenticated,
+        refreshUser,
       }}
     >
       {children}

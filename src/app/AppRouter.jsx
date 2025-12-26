@@ -13,7 +13,8 @@ import HomePage from '../pages/HomePage.jsx';
 import NotFoundPage from '../pages/NotFoundPage.jsx';
 import AboutUsPage from '../pages/AboutUsPage.jsx';
 import ContactUsPage from '../pages/ContactUsPage.jsx';
-import FavouritesPage from '../pages/FavouritesPage.jsx';
+import PrivacyPage from '../pages/PrivacyPage.jsx';
+import TermsPage from '../pages/TermsPage.jsx';
 
 // Auth Pages
 import LoginPage from '../pages/auth/LoginPage.jsx';
@@ -21,19 +22,22 @@ import RegisterPage from '../pages/auth/RegisterPage.jsx';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.jsx';
 import VerifyCodePage from '../pages/auth/VerifyCodePage.jsx';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage.jsx';
-import RegisterPaymentPage from '../pages/auth/RegisterPaymentPage.jsx';
+
 
 // Account Pages
 import AccountProfilePage from '../pages/account/AccountProfilePage.jsx';
 import AccountHistoryPage from '../pages/account/AccountHistoryPage.jsx';
-import AccountPaymentPage from '../pages/account/AccountPaymentPage.jsx';
+
 
 // Admin Pages
 import DashboardPage from '../pages/admin/DashboardPage.jsx';
 import AdminUsersPage from '../pages/admin/AdminUsersPage.jsx';
 import AdminBookingsPage from '../pages/admin/AdminBookingsPage.jsx';
 import AdminFlightsPage from '../pages/admin/AdminFlightsPage.jsx';
-import AdminToursPage from '../pages/admin/AdminToursPage.jsx'; // <-- ĐÃ SỬA: Dùng AdminToursPage
+import AdminToursPage from '../pages/admin/AdminToursPage.jsx';
+import AddUserPage from '../pages/admin/AddUserPage.jsx';
+import AddFlightPage from '../pages/admin/AddFlightPage.jsx';
+import AddTourPage from '../pages/admin/AddTourPage.jsx';
 
 // Flight Pages
 import FlightSearchPage from '../pages/flight/FlightSearchPage.jsx';
@@ -48,6 +52,9 @@ import TourListingPage from '../pages/tour/TourListingPage.jsx';
 import TourDetailPage from '../pages/tour/TourDetailPage.jsx';
 import TourBookingPage from '../pages/tour/TourBookingPage.jsx';
 import TourTicketPage from '../pages/tour/TourTicketPage.jsx';
+
+// Payment Page
+import PaymentReturnPage from '../pages/PaymentReturnPage.jsx';
 
 
 const AppRouter = () => {
@@ -71,9 +78,14 @@ const AppRouter = () => {
         <Route path="tour-booking" element={<TourBookingPage />} />
         <Route path="tour-ticket/:id" element={<TourTicketPage />} />
 
+        {/* --- PAYMENT PAGE --- */}
+        <Route path="payment-return" element={<PaymentReturnPage />} />
+
         {/* --- FOOTER PAGES --- */}
         <Route path="about-us" element={<AboutUsPage />} />
         <Route path="contact-us" element={<ContactUsPage />} />
+        <Route path="privacy" element={<PrivacyPage />} />
+        <Route path="terms" element={<TermsPage />} />
       </Route>
 
       {/* === Auth Routes === */}
@@ -83,23 +95,17 @@ const AppRouter = () => {
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
         <Route path="verify-code" element={<VerifyCodePage />} />
         <Route path="reset-password" element={<ResetPasswordPage />} />
-        <Route path="register-payment" element={<RegisterPaymentPage />} />
+
       </Route>
 
       {/* === Protected Routes === */}
-      {/* === Protected Routes === */}
       <Route element={<ProtectedRoute adminOnly={false} />}>
-        {/* Favourites (Cần đăng nhập) */}
-        <Route path="/" element={<MainLayout />}>
-          <Route path="favourites" element={<FavouritesPage />} />
-        </Route>
-
         {/* Account Routes */}
         <Route path="/account" element={<AccountLayout />}>
           <Route index element={<Navigate to="profile" replace />} />
           <Route path="profile" element={<AccountProfilePage />} />
           <Route path="history" element={<AccountHistoryPage />} />
-          <Route path="payment" element={<AccountPaymentPage />} />
+
         </Route>
       </Route>
 
@@ -108,9 +114,14 @@ const AppRouter = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="users" element={<AdminUsersPage />} />
+          <Route path="users/add" element={<AddUserPage />} />
           <Route path="bookings" element={<AdminBookingsPage />} />
           <Route path="flights" element={<AdminFlightsPage />} />
+          <Route path="flights/add" element={<AddFlightPage />} />
+          <Route path="flights/:id/edit" element={<AddFlightPage />} />
           <Route path="tours" element={<AdminToursPage />} />
+          <Route path="tours/add" element={<AddTourPage />} />
+          <Route path="tours/:id/edit" element={<AddTourPage />} />
         </Route>
       </Route>
 

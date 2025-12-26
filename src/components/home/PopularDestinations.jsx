@@ -27,13 +27,44 @@ const PopularDestinations = () => {
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Fallback destinations in case API returns empty data
+  const fallbackDestinations = [
+    {
+      id: 1,
+      img: "https://picsum.photos/400/300?random=200",
+      title: "Hà Nội, Việt Nam",
+      tags: "Văn hóa, Lịch sử, Ẩm thực"
+    },
+    {
+      id: 2,
+      img: "https://picsum.photos/400/300?random=201",
+      title: "Hồ Chí Minh, Việt Nam",
+      tags: "Đô thị, Mua sắm, Văn hóa"
+    },
+    {
+      id: 3,
+      img: "https://picsum.photos/400/300?random=202",
+      title: "Đà Nẵng, Việt Nam",
+      tags: "Biển, Du lịch, Thắng cảnh"
+    },
+    {
+      id: 4,
+      img: "https://picsum.photos/400/300?random=203",
+      title: "Nha Trang, Việt Nam",
+      tags: "Biển, Lặn, Nghỉ dưỡng"
+    }
+  ];
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await homeApi.getDestinations();
-        setDestinations(data);
+        // Use fallback data if API returns empty array
+        setDestinations(data && data.length > 0 ? data : fallbackDestinations);
       } catch (error) {
         console.error("Failed to load destinations", error);
+        // Use fallback data on error
+        setDestinations(fallbackDestinations);
       } finally {
         setLoading(false);
       }

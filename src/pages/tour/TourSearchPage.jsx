@@ -15,7 +15,7 @@ const RecommendationCard = ({ img, title, price, duration }) => (
     </div>
     <div className="p-4 flex justify-between items-center">
       <div>
-        <h4 className="font-semibold text-text-primary line-clamp-1">{title}</h4>
+        <h4 className="font-semibold text-text-primary truncate">{title}</h4>
         <div className="flex items-center gap-1 text-xs text-text-secondary mt-1">
             <FiClock /> {duration}
         </div>
@@ -43,17 +43,34 @@ const TourSearchPage = () => {
 
   // --- 1. STATE QUẢN LÝ FORM ---
   const [tourData, setTourData] = useState({
-    destination: '', 
-    duration: 'Mọi thời lượng', 
-    date: '', 
+    destination: '',
+    duration: 'Mọi thời lượng',
+    date: '',
     guests: 2
   });
 
-  // --- 2. HÀM XỬ LÝ TÌM KIẾM ---
+  // --- 2. STATE CHO FILTERS ---
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  const filterOptions = [
+    { key: 'all', label: 'Tất cả', icon: '🌍' },
+    { key: 'short', label: '2-3 ngày', icon: '⚡' },
+    { key: 'medium', label: '4-7 ngày', icon: '🏖️' },
+    { key: 'long', label: '8+ ngày', icon: '🏔️' },
+    { key: 'luxury', label: 'Sang trọng', icon: '✨' }
+  ];
+
+  // --- 3. HÀM XỬ LÝ TÌM KIẾM ---
   const handleSearch = () => {
     // Tách tên thành phố từ "Da Nang, Vietnam" -> "Da Nang"
     const query = tourData.destination ? tourData.destination.split(',')[0] : '';
     navigate(`/tour-listing?q=${query}`);
+  };
+
+  // --- 4. HÀM XỬ LÝ FILTER ---
+  const handleFilterChange = (filterKey) => {
+    setActiveFilter(filterKey);
+    // TODO: Implement actual filtering logic based on filterKey
   };
 
   return (
@@ -109,6 +126,25 @@ const TourSearchPage = () => {
             Xem tất cả
           </Link>
         </div>
+
+        {/* Filter Buttons */}
+        <div className="flex flex-wrap gap-3 mb-8">
+          {filterOptions.map((filter) => (
+            <button
+              key={filter.key}
+              onClick={() => handleFilterChange(filter.key)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                activeFilter === filter.key
+                  ? 'bg-brand-primary text-white shadow-lg'
+                  : 'bg-white text-text-secondary hover:bg-brand-pale hover:text-brand-primary border border-border-primary'
+              }`}
+            >
+              <span>{filter.icon}</span>
+              {filter.label}
+            </button>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <RecommendationCard img="https://images.unsplash.com/photo-1559592413-7cec4d0cae2b" title="Đà Nẵng - Hội An" price={350} duration="4N3Đ" />
           <RecommendationCard img="https://images.unsplash.com/photo-1502602898657-3e91760cbb34" title="Paris Mộng Mơ" price={2200} duration="9N8Đ" />

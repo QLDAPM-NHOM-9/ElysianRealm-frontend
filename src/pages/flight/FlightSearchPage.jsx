@@ -90,9 +90,17 @@ const FlightSearchPage = () => {
         </div>
         <p className="text-text-secondary mb-8">Discover the latest offers and news and start planning your next trip with us.</p>
         
-        {/* Placeholder Map */}
-        <div className="h-72 bg-brand-pale rounded-lg flex items-center justify-center text-brand-primary border-2 border-dashed border-brand-primary/30">
-          Map Placeholder
+        {/* Interactive Map Placeholder */}
+        <div className="h-72 bg-gradient-to-br from-brand-pale to-brand-primary/20 rounded-lg border-2 border-dashed border-brand-primary/30 flex items-center justify-center relative overflow-hidden group cursor-pointer">
+          <div className="text-center text-brand-primary z-10">
+            <div className="text-4xl mb-2">🗺️</div>
+            <h3 className="text-xl font-bold mb-1">Khám phá điểm đến</h3>
+            <p className="text-sm opacity-80">Tương tác với bản đồ để tìm chuyến bay</p>
+          </div>
+          <div className="absolute inset-0 bg-brand-primary/5 group-hover:bg-brand-primary/10 transition-colors duration-300" />
+          <div className="absolute top-4 right-4 w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+          <div className="absolute bottom-4 left-4 w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+          <div className="absolute top-1/2 left-1/3 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
         </div>
       </section>
 

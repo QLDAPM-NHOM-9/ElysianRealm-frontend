@@ -34,7 +34,7 @@ const FlightSearchForm = ({ data, onChange }) => {
           <Select
             id="from"
             value={data.from}
-            onChange={(e) => onChange('from', e.target.value)}
+            onChange={(value) => onChange('from', value)}
             className="[&_select]:pl-10 [&_select]:py-3 [&_select]:bg-bg-secondary [&_select]:border-none"
           >
             <option value="">Select Airport</option>
@@ -55,7 +55,7 @@ const FlightSearchForm = ({ data, onChange }) => {
           <Select
             id="to"
             value={data.to}
-            onChange={(e) => onChange('to', e.target.value)}
+            onChange={(value) => onChange('to', value)}
             className="[&_select]:pl-10 [&_select]:py-3 [&_select]:bg-bg-secondary [&_select]:border-none"
           >
             <option value="">Select Airport</option>
@@ -76,7 +76,7 @@ const FlightSearchForm = ({ data, onChange }) => {
           <Select
             id="tripType"
             value={data.tripType}
-            onChange={(e) => onChange('tripType', e.target.value)}
+            onChange={(value) => onChange('tripType', value)}
             className="[&_select]:pl-10 [&_select]:py-3 [&_select]:bg-bg-secondary [&_select]:border-none"
           >
             {TRIP_TYPES.map((type) => (
@@ -94,7 +94,7 @@ const FlightSearchForm = ({ data, onChange }) => {
           id="departDate" 
           type="date"
           value={data.departDate}
-          onChange={(e) => onChange('departDate', e.target.value)}
+          onChange={(value) => onChange('departDate', value)}
           className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
         />
       </div>
@@ -107,7 +107,7 @@ const FlightSearchForm = ({ data, onChange }) => {
             id="returnDate" 
             type="date"
             value={data.returnDate}
-            onChange={(e) => onChange('returnDate', e.target.value)}
+          onChange={(value) => onChange('returnDate', value)}
             className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
           />
         </div>
@@ -122,7 +122,7 @@ const FlightSearchForm = ({ data, onChange }) => {
           min="1"
           placeholder="1"
           value={data.passengers}
-          onChange={(e) => onChange('passengers', e.target.value)}
+          onChange={(value) => onChange('passengers', value)}
           icon={<FiUsers />}
           className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
         />
@@ -135,7 +135,7 @@ const FlightSearchForm = ({ data, onChange }) => {
           <Select
             id="classType"
             value={data.classType}
-            onChange={(e) => onChange('classType', e.target.value)}
+          onChange={(value) => onChange('classType', value)}
             className="[&_select]:pl-10 [&_select]:py-3 [&_select]:bg-bg-secondary [&_select]:border-none"
           >
             {CLASSES.map((cls) => (

@@ -28,7 +28,7 @@ export const authService = {
 
   /**
    * Register new user
-   * @param {Object} userData - {email, password, fullName, phone}
+   * @param {Object} userData - {email, password, name}
    * @returns {Promise}
    */
   register: async (userData) => {
@@ -100,6 +100,20 @@ export const authService = {
         code,
         password,
       });
+      return response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
+   * Update user profile
+   * @param {Object} profileData - {name, email, password, avatar}
+   * @returns {Promise}
+   */
+  updateProfile: async (profileData) => {
+    try {
+      const response = await axiosClient.put('/auth/me', profileData);
       return response;
     } catch (error) {
       throw error.response?.data || error;

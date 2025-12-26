@@ -36,7 +36,7 @@ const TourSearchForm = ({ data, onChange }) => {
             <Select 
               id="destination" 
               value={data.destination}
-              onChange={(e) => onChange('destination', e.target.value)}
+              onChange={(value) => onChange('destination', value)}
               className="[&_select]:pl-10 [&_select]:py-3 [&_select]:bg-bg-secondary [&_select]:border-none"
             >
               <option value="">Select Destination</option>
@@ -56,7 +56,7 @@ const TourSearchForm = ({ data, onChange }) => {
           id="startDate" 
           type="date"
           value={data.startDate}
-          onChange={(e) => onChange('startDate', e.target.value)}
+          onChange={(value) => onChange('startDate', value)}
           className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
         />
       </div>
@@ -70,7 +70,7 @@ const TourSearchForm = ({ data, onChange }) => {
           min="1"
           placeholder="2"
           value={data.guests}
-          onChange={(e) => onChange('guests', e.target.value)}
+          onChange={(value) => onChange('guests', value)}
           icon={<FiUsers />}
           className="[&_input]:py-3 [&_input]:bg-bg-secondary [&_input]:border-none"
         />

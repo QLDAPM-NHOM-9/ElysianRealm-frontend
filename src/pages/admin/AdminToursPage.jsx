@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import tourService from '../../services/tourService.js';
 import Spinner from '../../components/common/Spinner.jsx';
 import Button from '../../components/common/Button.jsx';
-import { FiPlus, FiEdit2, FiTrash2, FiMapPin, FiClock, FiCalendar } from 'react-icons/fi';
+import Modal from '../../components/common/Modal.jsx';
+import toast from 'react-hot-toast';
+import { FiPlus, FiEdit2, FiTrash2, FiMapPin, FiClock, FiCalendar, FiAlertTriangle } from 'react-icons/fi';
 
 const AdminToursPage = () => {
+  const navigate = useNavigate();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  // Confirmation modal state
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    tourId: null,
+    tourTitle: ''
+  });
 
   // Gọi API lấy danh sách Tour
   useEffect(() => {
@@ -26,15 +37,38 @@ const AdminToursPage = () => {
     fetchTours();
   }, []);
 
-  const handleDeleteTour = async (id) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa tour này?')) return;
+  const openDeleteModal = (tour) => {
+    setDeleteModal({
+      isOpen: true,
+      tourId: tour.id,
+      tourTitle: tour.title
+    });
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({
+      isOpen: false,
+      tourId: null,
+      tourTitle: ''
+    });
+  };
+
+  const handleDeleteTour = async () => {
+    if (!deleteModal.tourId) return;
 
     try {
-      await tourService.delete(id);
-      setTours(tours.filter((t) => t.id !== id));
+      await tourService.delete(deleteModal.tourId);
+      setTours(tours.filter((t) => t.id !== deleteModal.tourId));
+      toast.success('Xóa tour thành công!');
+      closeDeleteModal();
     } catch (err) {
-      alert('Xóa tour thất bại: ' + (err.message || 'Vui lòng thử lại'));
+      console.error('Delete tour failed:', err);
+      toast.error('Xóa tour thất bại: ' + (err.message || 'Vui lòng thử lại'));
     }
+  };
+
+  const handleEditTour = (id) => {
+    navigate(`/admin/tours/${id}/edit`);
   };
 
   if (loading)
@@ -56,7 +90,10 @@ const AdminToursPage = () => {
             Quản lý các gói tour, lịch trình và giá cả.
           </p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button
+          className="flex items-center gap-2"
+          onClick={() => navigate('/admin/tours/add')}
+        >
           <FiPlus /> Thêm Tour Mới
         </Button>
       </div>
@@ -131,13 +168,14 @@ const AdminToursPage = () => {
                   <td className="p-4 text-right">
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
+                        onClick={() => handleEditTour(tour.id)}
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         title="Chỉnh sửa"
                       >
                         <FiEdit2 />
                       </button>
                       <button
-                        onClick={() => handleDeleteTour(tour.id)}
+                        onClick={() => openDeleteModal(tour)}
                         className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Xóa"
                       >
@@ -177,6 +215,42 @@ const AdminToursPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteModal.isOpen}
+        onClose={closeDeleteModal}
+        title="Xác nhận xóa tour"
+      >
+        <div className="space-y-4">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+              <FiAlertTriangle className="w-5 h-5 text-red-600" />
+            </div>
+            <div className="flex-1">
+              <p className="text-text-primary font-medium">Bạn có chắc chắn muốn xóa tour này?</p>
+              <p className="text-text-secondary text-sm mt-1">
+                Tour <strong>"{deleteModal.tourTitle}"</strong> sẽ bị xóa vĩnh viễn và không thể khôi phục lại.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-border-primary">
+            <Button
+              variant="outline"
+              onClick={closeDeleteModal}
+            >
+              Hủy
+            </Button>
+            <Button
+              className="!bg-red-600 hover:!bg-red-700"
+              onClick={handleDeleteTour}
+            >
+              Xóa tour
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

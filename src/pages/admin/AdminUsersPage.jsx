@@ -1,30 +1,143 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../../components/common/Button.jsx';
-import Spinner from '../../components/common/Spinner.jsx';
-import { FiPlus, FiMoreVertical, FiMail, FiPhone, FiUser } from 'react-icons/fi';
-
-/**
- * NOTE: Requires backend endpoint GET /admin/users
- * Backend should return: { data: [ { id, name, email, phone, role, status } ] }
- */
+import Spinner from '../../components/common/Spinner';
+import { FiPlus, FiMoreVertical, FiMail, FiPhone, FiUser, FiEdit, FiTrash, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
+import { adminService } from '../../services/api.js';
 
 const AdminUsersPage = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState(null);
+
+  // Action handlers
+  const handleEditUser = (user) => {
+    // Navigate to a new edit page or show inline edit form
+    // For now, we'll navigate to an add page with edit mode
+    navigate('/admin/users/add', { state: { editingUser: user } });
+    setDropdownOpen(null);
+  };
+
+  const handleDeleteUser = (user) => {
+    setConfirmDialog({
+      type: 'delete',
+      user,
+      title: 'Xác nhận xóa người dùng',
+      message: `Bạn có chắc chắn muốn xóa người dùng "${user.name}" (${user.email})? Hành động này không thể hoàn tác.`,
+      confirmText: 'Xóa',
+      cancelText: 'Hủy'
+    });
+    setDropdownOpen(null);
+  };
+
+  const handleToggleStatus = (user) => {
+    setConfirmDialog({
+      type: 'toggle',
+      user,
+      title: 'Thay đổi trạng thái người dùng',
+      message: `Bạn có chắc chắn muốn ${user.status === 'Active' ? 'vô hiệu hóa' : 'kích hoạt'} người dùng "${user.name}"?`,
+      confirmText: user.status === 'Active' ? 'Vô hiệu hóa' : 'Kích hoạt',
+      cancelText: 'Hủy'
+    });
+    setDropdownOpen(null);
+  };
+
+  const confirmAction = async () => {
+    if (!confirmDialog) return;
+
+    try {
+      if (confirmDialog.type === 'delete') {
+        await adminService.deleteUser(confirmDialog.user.id);
+        // Refresh user list
+        const response = await adminService.getUsers();
+        let userData = response.data?.data || response.data || [];
+        if (Array.isArray(userData)) {
+          const mappedUsers = userData.map(user => {
+            const avatarUrl = user.avatar
+              ? user.avatar
+              : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&size=40`;
+
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              phone: '',
+              role: user.role,
+              status: user.isActive ? 'Active' : 'Inactive',
+              avatar: avatarUrl
+            };
+          });
+          setUsers(mappedUsers);
+        }
+      } else if (confirmDialog.type === 'toggle') {
+        await adminService.toggleUserStatus(confirmDialog.user.id);
+        // Update user status locally
+        setUsers(prev => prev.map(u =>
+          u.id === confirmDialog.user.id
+            ? { ...u, status: u.status === 'Active' ? 'Inactive' : 'Active' }
+            : u
+        ));
+      }
+    } catch (err) {
+      console.error('Action failed:', err);
+      setError('Thao tác thất bại: ' + (err.message || 'Vui lòng thử lại'));
+    } finally {
+      setConfirmDialog(null);
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        // TODO: Uncomment when backend endpoint is ready
-        // const data = await axiosClient.get('/admin/users');
-        // setUsers(Array.isArray(data.data) ? data.data : []);
-        
-        setError('Backend endpoint /admin/users not yet implemented. Contact backend team.');
-        setUsers([]);
+        const response = await adminService.getUsers();
+
+        // Extract data array from response (AdminController returns {message, data})
+        let userData = [];
+        if (Array.isArray(response.data)) {
+          // Response is direct array
+          userData = response.data;
+        } else if (response.data?.data && Array.isArray(response.data.data)) {
+          // Response is {message, data: [...]}
+          userData = response.data.data;
+        } else if (response && Array.isArray(response)) {
+          // Raw response is array
+          userData = response;
+        } else {
+          setError('Invalid response format from server.');
+        }
+
+        if (Array.isArray(userData)) {
+          // Map backend UserDTO to frontend expected format
+          const mappedUsers = userData.map(user => {
+            // Use the same avatar style as AdminHeader
+            const avatarUrl = user.avatar
+              ? user.avatar
+              : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random&size=40`;
+
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              phone: '', // Backend doesn't provide phone number yet
+              role: user.role,
+              status: user.isActive ? 'Active' : 'Inactive',
+              avatar: avatarUrl
+            };
+          });
+
+          setUsers(mappedUsers);
+        } else {
+          setUsers([]);
+          setError('Invalid response format from server.');
+        }
       } catch (err) {
-        setError(err.message || 'Failed to load users');
+        console.error('❌ Failed to load users:', err);
+        console.error('❌ Error details:', err.response?.data || err);
+        setError(`Không thể tải danh sách người dùng: ${err.message || 'Kiểm tra kết nối backend.'}`);
         setUsers([]);
       } finally {
         setLoading(false);
@@ -50,7 +163,10 @@ const AdminUsersPage = () => {
           <h1 className="text-3xl font-bold text-text-primary font-serif">Quản lý Người dùng</h1>
           <p className="text-text-secondary mt-1">Quản lý tài khoản, phân quyền và trạng thái.</p>
         </div>
-        <Button className="flex items-center gap-2" disabled>
+        <Button
+          className="flex items-center gap-2"
+          onClick={() => navigate('/admin/users/add')}
+        >
           <FiPlus /> Thêm User
         </Button>
       </div>
@@ -120,14 +236,72 @@ const AdminUsersPage = () => {
 
                   {/* Cột Hành động */}
                   <td className="p-4 text-right">
-                    <button className="text-text-tertiary hover:text-text-primary p-2">
-                      <FiMoreVertical />
-                    </button>
+                    <div className="relative">
+                      <button
+                        onClick={() => setDropdownOpen(dropdownOpen === user.id ? null : user.id)}
+                        className="text-text-tertiary hover:text-text-primary p-2"
+                      >
+                        <FiMoreVertical />
+                      </button>
+
+                      {dropdownOpen === user.id && (
+                        <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+                          <button
+                            onClick={() => handleEditUser(user)}
+                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2"
+                          >
+                            <FiEdit className="w-4 h-4" /> Chỉnh sửa
+                          </button>
+                          <button
+                            onClick={() => handleToggleStatus(user)}
+                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2"
+                          >
+                            {user.status === 'Active' ? <FiToggleLeft className="w-4 h-4" /> : <FiToggleRight className="w-4 h-4" />}
+                            {user.status === 'Active' ? 'Vô hiệu hóa' : 'Kích hoạt'}
+                          </button>
+                          <hr className="border-gray-200" />
+                          <button
+                            onClick={() => handleDeleteUser(user)}
+                            className="w-full text-left px-4 py-2 text-sm hover:bg-red-50 text-red-600 flex items-center gap-2"
+                          >
+                            <FiTrash className="w-4 h-4" /> Xóa
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Confirmation Dialog */}
+      {confirmDialog && (
+        <div className="fixed inset-0 flex items-center justify-center z-50" style={{backgroundColor: 'rgba(0, 0, 0, 0.1)'}}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 shadow-xl border border-gray-200">
+            <h3 className="text-lg font-semibold text-text-primary mb-2">
+              {confirmDialog.title}
+            </h3>
+            <p className="text-text-secondary mb-6">
+              {confirmDialog.message}
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => setConfirmDialog(null)}
+              >
+                {confirmDialog.cancelText}
+              </Button>
+              <Button
+                onClick={confirmAction}
+                className={confirmDialog.type === 'delete' ? 'bg-red-600 hover:bg-red-700' : ''}
+              >
+                {confirmDialog.confirmText}
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>

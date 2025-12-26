@@ -62,6 +62,67 @@ export const flightService = {
       throw error.response?.data || error;
     }
   },
+
+  /**
+   * Create new flight (Admin only)
+   * @param {FormData} flightData - FormData with flight data and optional logo
+   * @returns {Promise<Object>}
+   */
+  create: async (flightData) => {
+    try {
+      const response = await axiosClient.post('/admin/flights', flightData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
+   * Update flight (Admin only)
+   * @param {number} id
+   * @param {FormData} flightData - FormData with flight data and optional logo
+   * @returns {Promise<Object>}
+   */
+  update: async (id, flightData) => {
+    try {
+      const response = await axiosClient.put(`/admin/flights/${id}`, flightData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
+   * Create multiple flights in bulk (Admin only)
+   * @param {Array} flightDataArray - Array of flight data objects
+   * @returns {Promise<Object>}
+   */
+  createBulk: async (flightDataArray) => {
+    try {
+      const response = await axiosClient.post('/admin/flights/bulk', flightDataArray);
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
+   * Delete flight (Admin only)
+   * @param {number} id
+   * @returns {Promise}
+   */
+  delete: async (id) => {
+    try {
+      const response = await axiosClient.delete(`/admin/flights/${id}`);
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
 };
 
 export default flightService;

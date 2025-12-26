@@ -38,17 +38,17 @@ const FooterColumn = ({ title, links }) => (
 );
 
 const Footer = () => {
-  const destinations = ['Canada', 'Alaksa', 'France', 'Iceland'];
-  const activities = ['Northern Lights', 'Cruising & sailing', 'Multi-activities', 'Kayaking'];
-  
-  // Sửa lỗi dữ liệu trùng lặp (Xóa bớt 1 'Bali Travel Guide')
-  const blogs = ['Bali Travel Guide', 'Sri Lanks Travel Guide', 'Peru Travel Guide']; 
-  
+  const destinations = ['Hà Nội', 'Đà Nẵng', 'Hồ Chí Minh', 'Đà Lạt'];
+  const services = ['Đặt vé máy bay', 'Đặt tour du lịch', 'Khách sạn', 'Cho thuê xe'];
+
   const about = [
-    { label: 'Our Story', path: '/about-us' }, 
+    { label: 'Về chúng tôi', path: '/about-us' },
+    { label: 'Liên hệ', path: '/contact-us' }
   ];
-  const contact = [
-    { label: 'Work with us', path: '/contact-us' } 
+  const support = [
+    { label: 'Trợ giúp', path: '/help' },
+    { label: 'Chính sách bảo mật', path: '/privacy' },
+    { label: 'Điều khoản sử dụng', path: '/terms' }
   ];
 
   return (
@@ -70,11 +70,10 @@ const Footer = () => {
           </div>
           
           {/* Cột Links */}
-          <FooterColumn title="Our Destinations" links={destinations} />
-          <FooterColumn title="Our Activities" links={activities} />
-          <FooterColumn title="Travel Blogs" links={blogs} />
-          <FooterColumn title="About Us" links={about} />
-          <FooterColumn title="Contact Us" links={contact} />
+          <FooterColumn title="Điểm đến nổi bật" links={destinations} />
+          <FooterColumn title="Dịch vụ của chúng tôi" links={services} />
+          <FooterColumn title="Về chúng tôi" links={about} />
+          <FooterColumn title="Hỗ trợ" links={support} />
         </div>
       </div>
     </footer>
