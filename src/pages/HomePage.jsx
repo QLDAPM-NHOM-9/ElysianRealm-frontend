@@ -1,8 +1,6 @@
 import React from 'react';
 import HeroContent from '../components/home/HeroContent.jsx';
 import InteractiveSection from '../components/home/InteractiveSection.jsx';
-import Reviews from '../components/home/Reviews.jsx';
-import CtaBlocks from '../components/home/CtaBlocks.jsx';
 import heroImageUrl from '../assets/images/Homepage.jpg';
 
 const HomePage = () => {
@@ -22,9 +20,6 @@ const HomePage = () => {
 
       {/* === Interactive Section (Quick Actions & Featured Destinations) === */}
       <InteractiveSection />
-
-      {/* === Reviews Section === */}
-      <Reviews />
 
     </>
   );

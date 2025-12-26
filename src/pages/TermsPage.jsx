@@ -3,184 +3,184 @@ import React from 'react';
 const TermsPage = () => {
   return (
     <div className="container mx-auto px-4 py-16 max-w-4xl">
-      <h1 className="text-4xl font-bold text-brand-primary mb-8 font-serif">Terms and Conditions</h1>
-      
+      <h1 className="text-4xl font-bold text-brand-primary mb-8 font-serif">Điều Khoản và Điều Kiện</h1>
+
       <div className="space-y-8 text-text-secondary leading-relaxed">
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">1. Acceptance of Terms</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">1. Chấp Nhận Điều Khoản</h2>
           <p>
-            By accessing and using the Elysian Realm website and services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+            Bằng việc truy cập và sử dụng trang web và dịch vụ của Elysian Realm, bạn chấp nhận và đồng ý bị ràng buộc bởi các điều khoản và quy định của thỏa thuận này. Nếu bạn không đồng ý tuân thủ các điều khoản trên, vui lòng không sử dụng dịch vụ này.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">2. Use License</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">2. Giấy Phép Sử Dụng</h2>
           <p className="mb-3">
-            Permission is granted to temporarily download one copy of the materials (information or software) on Elysian Realm for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
+            Bạn được phép tải xuống tạm thời một bản sao của các tài liệu (thông tin hoặc phần mềm) trên Elysian Realm chỉ để xem cá nhân, không thương mại. Đây là việc cấp phép, không phải chuyển nhượng quyền sở hữu, và theo giấy phép này bạn không được:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Modify or copy the materials</li>
-            <li>Use the materials for any commercial purpose or for any public display</li>
-            <li>Attempt to decompile or reverse engineer any software contained on the website</li>
-            <li>Remove any copyright or other proprietary notations from the materials</li>
-            <li>Transfer the materials to another person or "mirror" the materials on any other server</li>
-            <li>Engage in any conduct that restricts or inhibits anyone's use or enjoyment of the website</li>
+            <li>Sửa đổi hoặc sao chép các tài liệu</li>
+            <li>Sử dụng các tài liệu cho bất kỳ mục đích thương mại nào hoặc trưng bày công khai</li>
+            <li>Cố gắng giải mã hoặc đảo ngược kỹ thuật bất kỳ phần mềm nào có trên trang web</li>
+            <li>Loại bỏ bất kỳ bản quyền hoặc thông báo quyền sở hữu nào khác khỏi các tài liệu</li>
+            <li>Chuyển giao các tài liệu cho người khác hoặc "phản chiếu" các tài liệu trên bất kỳ máy chủ nào khác</li>
+            <li>Tham gia vào bất kỳ hành vi nào hạn chế hoặc cản trở việc sử dụng hoặc hưởng lợi từ trang web của bất kỳ ai</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">3. Disclaimer</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">3. Tuyên Bố Từ Chối</h2>
           <p>
-            The materials on Elysian Realm are provided on an 'as is' basis. Elysian Realm makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+            Các tài liệu trên Elysian Realm được cung cấp trên cơ sở "như hiện tại". Elysian Realm không đưa ra bất kỳ bảo đảm nào, rõ ràng hoặc ngầm định, và bằng cách này phủ nhận và bác bỏ tất cả các bảo đảm khác bao gồm, không giới hạn ở, các bảo đảm ngầm định hoặc điều kiện về khả năng bán hàng, phù hợp với mục đích cụ thể, hoặc không vi phạm quyền sở hữu trí tuệ hoặc vi phạm quyền khác.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">4. Limitations</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">4. Giới Hạn</h2>
           <p>
-            In no event shall Elysian Realm or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on Elysian Realm, even if Elysian Realm or an authorized representative has been notified orally or in writing of the possibility of such damage.
+            Trong bất kỳ trường hợp nào, Elysian Realm hoặc các nhà cung cấp của chúng tôi sẽ không chịu trách nhiệm về bất kỳ thiệt hại nào (bao gồm, không giới hạn ở, thiệt hại do mất dữ liệu hoặc lợi nhuận, hoặc do gián đoạn kinh doanh) phát sinh từ việc sử dụng hoặc không thể sử dụng các tài liệu trên Elysian Realm, ngay cả khi Elysian Realm hoặc đại diện được ủy quyền đã được thông báo bằng miệng hoặc bằng văn bản về khả năng xảy ra thiệt hại như vậy.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">5. Accuracy of Materials</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">5. Độ Chính Xác của Tài Liệu</h2>
           <p>
-            The materials appearing on Elysian Realm could include technical, typographical, or photographic errors. Elysian Realm does not warrant that any of the materials on its website are accurate, complete, or current. Elysian Realm may make changes to the materials contained on its website at any time without notice.
+            Các tài liệu xuất hiện trên Elysian Realm có thể bao gồm các lỗi kỹ thuật, đánh máy hoặc chụp ảnh. Elysian Realm không đảm bảo rằng bất kỳ tài liệu nào trên trang web của mình là chính xác, đầy đủ hoặc hiện tại. Elysian Realm có thể thực hiện thay đổi đối với các tài liệu có trên trang web của mình bất kỳ lúc nào mà không cần thông báo trước.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">6. Booking and Reservations</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">6. Đặt Chỗ và Đặt Phòng</h2>
           <p className="mb-3">
-            When making a booking through our platform:
+            Khi thực hiện đặt chỗ thông qua nền tảng của chúng tôi:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>You guarantee that information provided is accurate and complete</li>
-            <li>You accept responsibility for payment of all charges</li>
-            <li>Prices and availability are subject to change without notice</li>
-            <li>Cancellation and refund policies vary by supplier</li>
-            <li>We are not responsible for errors or omissions in third-party supplier information</li>
+            <li>Bạn đảm bảo rằng thông tin được cung cấp là chính xác và đầy đủ</li>
+            <li>Bạn chấp nhận trách nhiệm thanh toán tất cả các khoản phí</li>
+            <li>Giá cả và tính sẵn có có thể thay đổi mà không cần thông báo trước</li>
+            <li>Chính sách hủy bỏ và hoàn tiền khác nhau tùy theo nhà cung cấp</li>
+            <li>Chúng tôi không chịu trách nhiệm về lỗi hoặc thiếu sót trong thông tin nhà cung cấp bên thứ ba</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">7. User Accounts</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">7. Tài Khoản Người Dùng</h2>
           <p className="mb-3">
-            If you create an account on our platform:
+            Nếu bạn tạo tài khoản trên nền tảng của chúng tôi:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>You are responsible for maintaining the confidentiality of your password</li>
-            <li>You agree to accept responsibility for all activities that occur under your account</li>
-            <li>You agree to notify us immediately of any unauthorized use of your account</li>
-            <li>We reserve the right to terminate accounts that violate these terms</li>
+            <li>Bạn có trách nhiệm duy trì tính bảo mật của mật khẩu của mình</li>
+            <li>Bạn đồng ý chấp nhận trách nhiệm về tất cả các hoạt động xảy ra dưới tài khoản của bạn</li>
+            <li>Bạn đồng ý thông báo cho chúng tôi ngay lập tức về bất kỳ việc sử dụng trái phép tài khoản nào</li>
+            <li>Chúng tôi có quyền chấm dứt các tài khoản vi phạm các điều khoản này</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">8. Intellectual Property Rights</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">8. Quyền Sở Hữu Trí Tuệ</h2>
           <p>
-            All content on Elysian Realm, including text, graphics, logos, images, and software, is the property of Elysian Realm or its content suppliers and is protected by international copyright laws. Unauthorized reproduction or distribution is prohibited.
+            Tất cả nội dung trên Elysian Realm, bao gồm văn bản, đồ họa, logo, hình ảnh và phần mềm, là tài sản của Elysian Realm hoặc nhà cung cấp nội dung của nó và được bảo vệ bởi luật bản quyền quốc tế. Việc sao chép hoặc phân phối trái phép bị cấm.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">9. User-Generated Content</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">9. Nội Dung do Người Dùng Tạo</h2>
           <p className="mb-3">
-            If you submit content (reviews, comments, etc.) to our platform:
+            Nếu bạn gửi nội dung (đánh giá, bình luận, v.v.) lên nền tảng của chúng tôi:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>You grant us a worldwide, non-exclusive license to use, reproduce, and display the content</li>
-            <li>You warrant that you have the right to submit the content</li>
-            <li>You agree not to submit offensive, illegal, or infringing content</li>
-            <li>We reserve the right to remove any content at our discretion</li>
+            <li>Bạn cấp cho chúng tôi giấy phép toàn cầu, không độc quyền để sử dụng, sao chép và hiển thị nội dung</li>
+            <li>Bạn đảm bảo rằng bạn có quyền gửi nội dung</li>
+            <li>Bạn đồng ý không gửi nội dung xúc phạm, bất hợp pháp hoặc vi phạm</li>
+            <li>Chúng tôi có quyền xóa bất kỳ nội dung nào theo quyết định của mình</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">10. Third-Party Services</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">10. Dịch Vụ Bên Thứ Ba</h2>
           <p>
-            Our platform facilitates bookings with airlines, hotels, tour operators, and other travel providers. We are not responsible for the actions, content, or omissions of these third parties. Your use of their services is subject to their own terms and conditions.
+            Nền tảng của chúng tôi tạo điều kiện đặt chỗ với các hãng hàng không, khách sạn, công ty du lịch và các nhà cung cấp du lịch khác. Chúng tôi không chịu trách nhiệm về hành động, nội dung hoặc thiếu sót của các bên thứ ba này. Việc sử dụng dịch vụ của họ phải tuân thủ các điều khoản và điều kiện riêng của họ.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">11. Payment Terms</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">11. Điều Khoản Thanh Toán</h2>
           <p className="mb-3">
-            Payment for bookings must be made through our secure payment gateway. We accept:
+            Thanh toán cho đặt chỗ phải được thực hiện thông qua cổng thanh toán an toàn của chúng tôi. Chúng tôi chấp nhận:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Credit and debit cards</li>
-            <li>Digital payment methods</li>
-            <li>Bank transfers (where available)</li>
+            <li>Thẻ tín dụng và thẻ ghi nợ</li>
+            <li>Các phương thức thanh toán kỹ thuật số</li>
+            <li>Chuyển khoản ngân hàng (nếu có)</li>
           </ul>
           <p className="mt-4">
-            All prices are in USD unless otherwise stated. Additional taxes or fees may apply based on your location.
+            Tất cả giá cả đều bằng VND trừ khi có ghi chú khác. Có thể áp dụng thuế bổ sung hoặc phí dựa trên vị trí của bạn.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">12. Limitation of Liability</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">12. Giới Hạn Trách Nhiệm</h2>
           <p>
-            To the fullest extent permitted by law, Elysian Realm shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use the website or services, even if we have been advised of the possibility of such damages.
+            Trong phạm vi tối đa được pháp luật cho phép, Elysian Realm sẽ không chịu trách nhiệm về bất kỳ thiệt hại gián tiếp, ngẫu nhiên, đặc biệt, hậu quả hoặc trừng phạt nào phát sinh từ việc sử dụng hoặc không thể sử dụng trang web hoặc dịch vụ của bạn, ngay cả khi chúng tôi đã được thông báo về khả năng xảy ra thiệt hại như vậy.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">13. Indemnification</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">13. Bồi Thường</h2>
           <p>
-            You agree to indemnify and hold harmless Elysian Realm and its officers, directors, employees, agents, and suppliers from any claim, damage, loss, or expense arising from your use of the website or services or violation of these terms.
+            Bạn đồng ý bồi thường và giữ vô hại Elysian Realm và các giám đốc, giám đốc điều hành, nhân viên, đại lý và nhà cung cấp của chúng tôi khỏi bất kỳ khiếu nại, thiệt hại, mất mát hoặc chi phí nào phát sinh từ việc sử dụng trang web hoặc dịch vụ của bạn hoặc vi phạm các điều khoản này.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">14. Prohibited Conduct</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">14. Hành Vi Bị Cấm</h2>
           <p className="mb-3">
-            You agree not to:
+            Bạn đồng ý không:
           </p>
           <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Engage in any form of harassment or abuse</li>
-            <li>Post false, misleading, or defamatory content</li>
-            <li>Attempt to gain unauthorized access to our systems</li>
-            <li>Engage in scraping or automated data collection</li>
-            <li>Use the website for illegal purposes</li>
-            <li>Impersonate another user or entity</li>
+            <li>Tham gia vào bất kỳ hình thức quấy rối hoặc lạm dụng nào</li>
+            <li>Đăng nội dung sai sự thật, gây hiểu lầm hoặc phỉ báng</li>
+            <li>Cố gắng truy cập trái phép vào hệ thống của chúng tôi</li>
+            <li>Tham gia thu thập dữ liệu tự động hoặc cào dữ liệu</li>
+            <li>Sử dụng trang web cho mục đích bất hợp pháp</li>
+            <li>Mạo danh người dùng hoặc thực thể khác</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">15. Termination</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">15. Chấm Dứt</h2>
           <p>
-            We reserve the right to terminate or suspend your account and access to the website at any time, without notice, for conduct that we believe violates these terms or is harmful to other users or the business.
+            Chúng tôi có quyền chấm dứt hoặc tạm ngừng tài khoản và quyền truy cập vào trang web của bạn bất kỳ lúc nào, không cần thông báo, đối với hành vi mà chúng tôi tin rằng vi phạm các điều khoản này hoặc có hại cho người dùng khác hoặc doanh nghiệp.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">16. Governing Law</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">16. Luật Áp Dụng</h2>
           <p>
-            These terms and conditions are governed by and construed in accordance with the laws of Vietnam, and you irrevocably submit to the exclusive jurisdiction of the courts in Ho Chi Minh City.
+            Các điều khoản và điều kiện này được điều chỉnh bởi và hiểu theo luật pháp Việt Nam, và bạn không thể thu hồi quyền nộp cho quyền tài phán độc quyền của tòa án tại Thành phố Hồ Chí Minh.
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">17. Contact Information</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">17. Thông Tin Liên Hệ</h2>
           <p>
-            If you have questions about these Terms and Conditions, please contact us at:
+            Nếu bạn có câu hỏi về Điều Khoản và Điều Kiện này, vui lòng liên hệ với chúng tôi tại:
           </p>
           <div className="mt-4 bg-gray-50 p-4 rounded-lg border border-border-primary">
             <p><strong>Elysian Realm</strong></p>
             <p>Email: support@elysianrealm.com</p>
-            <p>Address: 123 Đường Mộng Mơ, Quận 1, TP.HCM</p>
-            <p>Phone: +84 123 456 789</p>
+            <p>Địa chỉ: 123 Đường Mộng Mơ, Quận 1, TP.HCM</p>
+            <p>Điện thoại: +84 123 456 789</p>
           </div>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold text-text-primary mb-4">18. Changes to Terms</h2>
+          <h2 className="text-2xl font-bold text-text-primary mb-4">18. Thay Đổi Điều Khoản</h2>
           <p>
-            We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting to the website. Your continued use of the website after changes are posted constitutes your acceptance of the modified terms.
+            Chúng tôi có quyền sửa đổi các điều khoản này bất kỳ lúc nào. Thay đổi sẽ có hiệu lực ngay lập tức khi đăng lên trang web. Việc tiếp tục sử dụng trang web sau khi thay đổi được đăng tải cấu thành việc chấp nhận các điều khoản đã sửa đổi của bạn.
           </p>
           <p className="mt-4 text-sm text-text-tertiary">
-            Last Updated: December 26, 2025
+            Cập nhật lần cuối: 26 tháng 12 năm 2025
           </p>
         </section>
       </div>

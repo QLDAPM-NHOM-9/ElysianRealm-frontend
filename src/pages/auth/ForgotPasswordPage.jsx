@@ -5,6 +5,7 @@ import Input from '../../components/common/Input.jsx';
 import Button from '../../components/common/Button.jsx';
 import Spinner from '../../components/common/Spinner.jsx';
 import toast from 'react-hot-toast';
+import authService from '../../services/authService.js';
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const ForgotPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     if (!email) {
       setError('Vui lòng nhập email của bạn.');
       return;
@@ -23,18 +24,15 @@ const ForgotPasswordPage = () => {
 
     setIsLoading(true);
     try {
-      // TODO: Call backend API to send password reset email
-      // const response = await authService.sendPasswordResetEmail(email);
-      
-      // For now, simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast.success('Vui lòng kiểm tra email để nhận mã xác thực');
+      const response = await authService.forgotPassword(email);
+
+      toast.success(response.message || 'Vui lòng kiểm tra email để nhận mã xác thực');
       // Store email in session for use in verify code page
       sessionStorage.setItem('resetEmail', email);
       navigate('/verify-code', { state: { email } });
     } catch (err) {
-      const message = err.message || 'Không thể gửi email. Vui lòng thử lại.';
+      console.error('Forgot password error:', err);
+      const message = err.response?.data?.message || err.message || 'Không thể gửi email. Vui lòng thử lại.';
       setError(message);
       toast.error(message);
     } finally {
