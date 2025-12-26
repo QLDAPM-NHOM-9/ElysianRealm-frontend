@@ -19,24 +19,34 @@ const TourTicketPage = () => {
       try {
         setLoading(true);
 
-        // Fetch booking details
+        // Fetch booking details - handle both response.data and direct response
         const bookingResponse = await bookingService.getById(id);
-        const bookingData = bookingResponse.data || bookingResponse;
+        const bookingData = bookingResponse?.data || bookingResponse;
+        
+        if (!bookingData || Object.keys(bookingData).length === 0) {
+          setError('Dữ liệu vé không hợp lệ.');
+          setLoading(false);
+          return;
+        }
+        
         setBooking(bookingData);
 
         // Fetch tour details if itemId exists
         if (bookingData.itemId) {
           try {
             const tourResponse = await tourService.getById(bookingData.itemId);
-            setTour(tourResponse);
+            const tourData = tourResponse?.data || tourResponse;
+            setTour(tourData);
           } catch (tourErr) {
             console.warn('Failed to fetch tour details:', tourErr);
+            // Don't fail the whole page if tour details fail
           }
         }
 
       } catch (err) {
         console.error('Failed to fetch booking details:', err);
-        setError('Không thể tải thông tin vé. Vui lòng thử lại.');
+        const errorMessage = err?.response?.data?.message || err?.message || 'Không thể tải thông tin vé. Vui lòng thử lại.';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

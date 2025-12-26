@@ -38,7 +38,14 @@ const FlightTicketPage = () => {
     const fetchBooking = async () => {
       try {
         setLoading(true);
-        const bookingData = await bookingService.getById(id);
+        const bookingResponse = await bookingService.getById(id);
+        const bookingData = bookingResponse?.data || bookingResponse;
+
+        if (!bookingData || Object.keys(bookingData).length === 0) {
+          setError('Dữ liệu vé không hợp lệ.');
+          setLoading(false);
+          return;
+        }
 
         // Parse the details JSON string if it's a flight booking
         if (bookingData.type === 'FLIGHT' && typeof bookingData.details === 'string') {
@@ -54,16 +61,18 @@ const FlightTicketPage = () => {
           try {
             const flightService = (await import('../../services/flightService.js')).default;
             const flightDetails = await flightService.getById(bookingData.flightId);
-            bookingData.flightDetails = flightDetails;
+            bookingData.flightDetails = flightDetails?.data || flightDetails;
           } catch (flightError) {
             console.warn('Failed to fetch flight details:', flightError);
+            // Don't fail the whole page if flight details fail
           }
         }
 
         setBooking(bookingData);
       } catch (err) {
         console.error('Failed to load booking', err);
-        setError('Không thể tải thông tin vé. Vui lòng thử lại sau.');
+        const errorMessage = err?.response?.data?.message || err?.message || 'Không thể tải thông tin vé. Vui lòng thử lại sau.';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -75,8 +84,8 @@ const FlightTicketPage = () => {
   }, [id]);
 
   const handleDownload = () => {
-    // TODO: Implement PDF download functionality
-    console.log('Downloading ticket...');
+    // PDF download functionality can be added later using libraries like jsPDF
+    window.print();
   };
 
   const handleShare = () => {
