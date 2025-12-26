@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Newsletter from './Newsletter.jsx';
-import { FaFacebookF, FaTwitter, FaYoutube, FaInstagram } from 'react-icons/fa';
-import logoIcon from '../../assets/icons/Elysia.png'; 
-import logoText from '../../assets/icons/Elysian.png'; 
+import logoIcon from '../../assets/icons/Elysia.png';
+import logoText from '../../assets/icons/Elysian.png';
 
 // Logo
 const Logo = () => (
@@ -38,15 +36,22 @@ const FooterColumn = ({ title, links }) => (
 );
 
 const Footer = () => {
-  const destinations = ['Hà Nội', 'Đà Nẵng', 'Hồ Chí Minh', 'Đà Lạt'];
-  const services = ['Đặt vé máy bay', 'Đặt tour du lịch', 'Khách sạn', 'Cho thuê xe'];
+  const destinations = [
+    { label: 'Hà Nội', path: '/tours' },
+    { label: 'Đà Nẵng', path: '/tours' },
+    { label: 'Hồ Chí Minh', path: '/tours' },
+    { label: 'Đà Lạt', path: '/tours' }
+  ];
+  const services = [
+    { label: 'Đặt vé máy bay', path: '/flights' },
+    { label: 'Đặt tour du lịch', path: '/tours' }
+  ];
 
   const about = [
     { label: 'Về chúng tôi', path: '/about-us' },
     { label: 'Liên hệ', path: '/contact-us' }
   ];
   const support = [
-    { label: 'Trợ giúp', path: '/help' },
     { label: 'Chính sách bảo mật', path: '/privacy' },
     { label: 'Điều khoản sử dụng', path: '/terms' }
   ];
@@ -58,15 +63,9 @@ const Footer = () => {
 
         {/* 2. Footer Links */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 py-16">
-          {/* Cột Logo & Social */}
+          {/* Cột Logo */}
           <div className="col-span-2 md:col-span-4 lg:col-span-2 pr-8">
             <Logo />
-            <div className="flex justify-between my-6">
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaFacebookF /></a>
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaTwitter /></a>
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaYoutube /></a>
-              <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-text-secondary hover:bg-gray-200"><FaInstagram /></a>
-            </div>
           </div>
           
           {/* Cột Links */}
