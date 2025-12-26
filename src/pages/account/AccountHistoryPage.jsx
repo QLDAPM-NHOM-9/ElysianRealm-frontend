@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiSend, FiCompass, FiMapPin, FiChevronRight, FiDownload, FiCalendar, FiStar } from 'react-icons/fi';
 import { bookingService, reviewService } from '../../services/api.js';
 import { tourService } from '../../services/tourService.js';
@@ -8,7 +9,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 
 // Component vé máy bay
-const FlightTicketCard = ({ data }) => (
+const FlightTicketCard = ({ data, onViewTicket }) => (
   <div className="bg-bg-primary border border-border-primary rounded-lg p-4 flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
     <div className="flex items-center gap-4 w-full md:w-auto">
       <div className="w-12 h-12 rounded-full border border-border-primary flex items-center justify-center bg-white p-2">
@@ -52,7 +53,7 @@ const FlightTicketCard = ({ data }) => (
       <Button
         variant="secondary"
         className="font-medium py-2 px-4 shadow-none"
-        onClick={() => window.open(`/flight-ticket/${data.id}`, '_blank')}
+        onClick={() => onViewTicket(`/flight-ticket/${data.id}`)}
       >
         <FiDownload />
         <span className="hidden sm:inline">Vé điện tử</span>
@@ -162,7 +163,7 @@ const ReviewModal = ({ isOpen, onClose, booking, onSubmitReview }) => {
 };
 
 // Component vé tour
-const TourBookingCard = ({ data, onReviewClick, hasReviewed }) => {
+const TourBookingCard = ({ data, onReviewClick, hasReviewed, onViewTicket }) => {
   const canReview = (data.status === 'CONFIRMED' || data.status === 'COMPLETED') && !hasReviewed;
 
   return (
@@ -207,7 +208,7 @@ const TourBookingCard = ({ data, onReviewClick, hasReviewed }) => {
           <Button
             variant="secondary"
             className="font-medium py-2 px-4 shadow-none"
-            onClick={() => window.open(`/tour-ticket/${data.id}`, '_blank')}
+            onClick={() => onViewTicket(`/tour-ticket/${data.id}`)}
           >
             <FiDownload />
             <span className="hidden sm:inline">Xem Vé</span>
@@ -239,6 +240,7 @@ const TourBookingCard = ({ data, onReviewClick, hasReviewed }) => {
 
 const AccountHistoryPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('flights');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -348,6 +350,11 @@ const AccountHistoryPage = () => {
     activeTab === 'flights' ? b.type === 'flight' : b.type === 'tour'
   );
 
+  // Handler for view ticket functionality
+  const handleViewTicket = (path) => {
+    navigate(path);
+  };
+
   // Handlers for review functionality
   const handleReviewClick = (booking) => {
     setReviewModal({ isOpen: true, booking });
@@ -428,13 +435,14 @@ const AccountHistoryPage = () => {
           {filteredBookings.length > 0 ? (
             filteredBookings.map((booking) =>
               activeTab === 'flights' ? (
-                <FlightTicketCard key={booking.id} data={booking} />
+                <FlightTicketCard key={booking.id} data={booking} onViewTicket={handleViewTicket} />
               ) : (
                 <TourBookingCard
                   key={booking.id}
                   data={booking}
                   onReviewClick={handleReviewClick}
                   hasReviewed={reviewedTours.has(booking.itemId)}
+                  onViewTicket={handleViewTicket}
                 />
               )
             )
