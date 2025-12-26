@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { bookingService } from '../../services/api.js';
 import flightService from '../../services/flightService.js';
 import tourService from '../../services/tourService.js';
@@ -6,6 +7,7 @@ import Spinner from '../../components/common/Spinner.jsx';
 import { FiEye, FiCheck, FiX } from 'react-icons/fi';
 
 const AdminBookingsPage = () => {
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [flights, setFlights] = useState({});
   const [tours, setTours] = useState({});
@@ -60,13 +62,16 @@ const AdminBookingsPage = () => {
   // Hàm cập nhật trạng thái đơn hàng (Duyệt/Hủy)
   const updateStatus = async (id, newStatus) => {
     try {
+      // Convert to uppercase to match backend expectations
+      const statusToSend = newStatus.toUpperCase();
+      
       // Call backend API to update status
-      await bookingService.updateStatus(id, newStatus);
+      await bookingService.updateStatus(id, statusToSend);
 
       // Cập nhật state local để giao diện thay đổi ngay lập tức
       setBookings(prevBookings =>
         prevBookings.map(booking =>
-          booking.id === id ? { ...booking, status: newStatus } : booking
+          booking.id === id ? { ...booking, status: statusToSend } : booking
         )
       );
     } catch (error) {
@@ -279,6 +284,13 @@ const AdminBookingsPage = () => {
                     <td className="p-4">
                       <div className="flex gap-2">
                         <button
+                          onClick={() => {
+                            if (booking.type === 'flight') {
+                              navigate(`/flight-ticket/${booking.id}`);
+                            } else {
+                              navigate(`/tour-ticket/${booking.id}`);
+                            }
+                          }}
                           className="p-2 text-text-secondary hover:text-brand-primary hover:bg-brand-pale rounded transition-colors"
                           title="Xem chi tiết"
                         >
