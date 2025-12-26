@@ -25,12 +25,14 @@ const PaymentReturnPage = () => {
           params: params // axios will convert this to query parameters
         });
 
-        if (result.success) {
+        if (result && result.success) {
           setPaymentStatus('success');
           setPaymentData(result);
         } else {
           setPaymentStatus('failed');
-          setPaymentData(result);
+          setPaymentData(result || {
+            message: 'Thanh toán thất bại hoặc bị hủy'
+          });
         }
 
       } catch (error) {
@@ -38,7 +40,7 @@ const PaymentReturnPage = () => {
         setPaymentStatus('failed');
         setPaymentData({
           message: 'Không thể xác minh thanh toán. Vui lòng liên hệ hỗ trợ.',
-          error: error.response?.data?.message || error.message
+          error: error?.response?.data?.message || error?.message || 'Lỗi không xác định'
         });
       }
     };

@@ -85,15 +85,20 @@ const VNPayPayment = ({ bookingId, total, onSuccess, onCancel, isProcessing }) =
         amount: amountInVND // Send VND amount to backend
       });
 
-      // Redirect to VNPay payment page
-      window.location.href = response.data.paymentUrl;
+      // Check if response has paymentUrl
+      if (response && response.paymentUrl) {
+        // Redirect to VNPay payment page
+        window.location.href = response.paymentUrl;
+      } else {
+        throw new Error('Invalid response from server');
+      }
 
     } catch (error) {
       console.error('VNPay payment error:', error);
       setIsRedirecting(false);
       // Handle error - show message to user
-      const errorMessage = error.response?.data?.message || 'Không thể tạo liên kết thanh toán. Vui lòng thử lại.';
-      alert(errorMessage);
+      const errorMessage = error?.response?.data?.message || error?.message || 'Không thể tạo liên kết thanh toán. Vui lòng thử lại.';
+      alert(`Lỗi thanh toán VNPay: ${errorMessage}`);
     }
   };
 
