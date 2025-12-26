@@ -77,6 +77,7 @@ const FlightBookingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
 
   // Get flight data from route state
   const flightData = location.state?.flight || {};
@@ -104,8 +105,8 @@ const FlightBookingPage = () => {
     total: (flightData.price || 400) + Math.round((flightData.price || 400) * 0.025) + 10,
   };
 
-  // Hàm xử lý đặt vé
-  const handleBooking = async () => {
+  // Hàm xử lý đặt vé - tạo booking first
+  const handleCreateBooking = async () => {
     setIsProcessing(true);
     try {
       // Prepare booking data from flight info
@@ -118,7 +119,8 @@ const FlightBookingPage = () => {
         itemId: flightData.id,
         date: departureDate,
         guests: 1,
-        paymentMethod: 'credit_card',
+        paymentMethod: 'pending', // Will be updated after payment
+        paymentCompleted: false,
         details: JSON.stringify({
           from: flightData.from || 'Unknown',
           to: flightData.to || 'Unknown',
@@ -130,17 +132,40 @@ const FlightBookingPage = () => {
         })
       };
 
-      // 2. Gọi API tạo đơn hàng
+      // Create booking
       const createdBooking = await bookingService.create(newBookingData);
-      toast.success('Đặt vé thành công!');
-
-      // 3. Chuyển hướng đến trang vé hoặc lịch sử
-      // (Ở đây ta chuyển đến trang History để thấy kết quả)
-      navigate('/account/history');
+      
+      // Store booking ID for payment processing
+      if (createdBooking && createdBooking.id) {
+        setBookingId(createdBooking.id);
+        toast.success('Đã tạo vé, vui lòng chọn phương thức thanh toán');
+      }
 
     } catch (error) {
       console.error('Booking failed:', error);
       toast.error('Không thể đặt vé. Vui lòng thử lại.');
+      setIsProcessing(false);
+    }
+  };
+
+  // Callback xử lý khi user chọn phương thức thanh toán
+  const handlePaymentSubmit = async (paymentData) => {
+    try {
+      setIsProcessing(true);
+      
+      if (paymentData.method === 'vnpay') {
+        // VNPay will be handled by PaymentOptions, just navigate after
+        toast.success('Đang chuyển hướng đến VNPay...');
+      } else if (paymentData.method === 'cash') {
+        // Cash payment
+        toast.success('Đơn hàng đã được tạo. Vui lòng thanh toán tại quầy.');
+        setTimeout(() => {
+          navigate('/account/history');
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Payment handling failed:', error);
+      toast.error('Lỗi xử lý thanh toán. Vui lòng thử lại.');
     } finally {
       setIsProcessing(false);
     }
@@ -154,13 +179,27 @@ const FlightBookingPage = () => {
         <main className="flex-1 space-y-6">
           <FlightLegCard flightData={flightData} />
           
-          {/* Truyền hàm xử lý và trạng thái loading xuống PaymentOptions */}
-          <PaymentOptions
-            onSubmit={handleBooking}
-            isProcessing={isProcessing}
-            total={priceDetails.total}
-            type="flight"
-          />
+          {/* Nếu chưa có booking, show button để tạo booking */}
+          {!bookingId ? (
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+              <button
+                onClick={handleCreateBooking}
+                disabled={isProcessing}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              >
+                {isProcessing ? 'Đang xử lý...' : 'Xác nhận và chọn phương thức thanh toán'}
+              </button>
+            </div>
+          ) : (
+            /* Sau khi có booking, hiển thị payment options */
+            <PaymentOptions
+              onSubmit={handlePaymentSubmit}
+              isProcessing={isProcessing}
+              total={priceDetails.total}
+              type="flight"
+              bookingId={bookingId}
+            />
+          )}
         </main>
 
         {/* Cột phải: Sidebar */}
