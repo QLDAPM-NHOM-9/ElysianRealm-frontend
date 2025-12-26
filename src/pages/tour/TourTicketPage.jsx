@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { FiMapPin, FiCalendar, FiUsers, FiClock, FiCheckCircle, FiDownload } from 'react-icons/fi';
 import { bookingService } from '../../services/api.js';
 import { tourService } from '../../services/tourService.js';
@@ -10,7 +10,9 @@ import { useAuth } from '../../contexts/AuthContext.jsx';
 const TourTicketPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
+  const isAdmin = location.state?.isAdmin || false;
   const [booking, setBooking] = useState(null);
   const [tour, setTour] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,7 +24,7 @@ const TourTicketPage = () => {
         setLoading(true);
 
         // Fetch booking details - handle both response.data and direct response
-        const bookingResponse = await bookingService.getById(id);
+        const bookingResponse = await (isAdmin ? bookingService.getByIdAdmin(id) : bookingService.getById(id));
         const bookingData = bookingResponse?.data || bookingResponse;
         
         if (!bookingData || Object.keys(bookingData).length === 0) {
@@ -57,7 +59,7 @@ const TourTicketPage = () => {
     if (id) {
       fetchBookingDetails();
     }
-  }, [id]);
+  }, [id, isAdmin]);
 
   const handleDownloadTicket = () => {
     // Simple print functionality

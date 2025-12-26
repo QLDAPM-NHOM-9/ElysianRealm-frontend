@@ -75,9 +75,23 @@ export const bookingService = {
   },
 
   /**
+   * Get single booking by ID (Admin only)
+   * @param {string} id
+   * @returns {Promise<Object>}
+   */
+  getByIdAdmin: async (id) => {
+    try {
+      const response = await axiosClient.get(`/admin/bookings/${id}`);
+      return response.data || response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  /**
    * Update booking status (Admin only)
    * @param {string} id
-   * @param {string} status - 'completed' or 'cancelled'
+   * @param {string} status - 'COMPLETED' or 'CANCELLED'
    * @returns {Promise}
    */
   updateStatus: async (id, status) => {

@@ -82,7 +82,7 @@ const AdminBookingsPage = () => {
 
   // Helper function to get service information
   const getServiceInfo = (booking) => {
-    if (booking.type === 'flight') {
+    if (booking.type?.toLowerCase() === 'flight') {
       const flight = flights[booking.itemId];
       return {
         name: flight ? `${flight.airline} (${flight.from} - ${flight.to})` : 'Chuyến bay',
@@ -90,7 +90,7 @@ const AdminBookingsPage = () => {
         location: flight ? `${flight.from} → ${flight.to}` : 'N/A',
         date: booking.date
       };
-    } else if (booking.type === 'tour') {
+    } else if (booking.type?.toLowerCase() === 'tour') {
       const tour = tours[booking.itemId];
       return {
         name: tour ? tour.name : 'Tour du lịch',
@@ -239,8 +239,8 @@ const AdminBookingsPage = () => {
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${booking.type === 'flight' ? 'bg-purple-100 text-purple-700' : 'bg-orange-100 text-orange-700'}`}>
-                        {booking.type === 'flight' ? 'Bay' : 'Tour'}
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${booking.type?.toLowerCase() === 'flight' ? 'bg-purple-100 text-purple-700' : 'bg-orange-100 text-orange-700'}`}>
+                        {booking.type?.toLowerCase() === 'flight' ? 'Bay' : 'Tour'}
                       </span>
                     </td>
                     <td className="p-4">
@@ -285,10 +285,10 @@ const AdminBookingsPage = () => {
                       <div className="flex gap-2">
                         <button
                           onClick={() => {
-                            if (booking.type === 'flight') {
-                              navigate(`/flight-ticket/${booking.id}`);
+                            if (booking.type?.toLowerCase() === 'flight') {
+                              navigate(`/flight-ticket/${booking.id}`, { state: { isAdmin: true } });
                             } else {
-                              navigate(`/tour-ticket/${booking.id}`);
+                              navigate(`/tour-ticket/${booking.id}`, { state: { isAdmin: true } });
                             }
                           }}
                           className="p-2 text-text-secondary hover:text-brand-primary hover:bg-brand-pale rounded transition-colors"

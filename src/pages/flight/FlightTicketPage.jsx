@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { FiDownload, FiShare2, FiMapPin, FiCalendar, FiClock, FiUser, FiSend } from 'react-icons/fi';
 import Button from '../../components/common/Button.jsx';
 import Spinner from '../../components/common/Spinner.jsx';
 import logoIcon from '../../assets/icons/Elysia.png';
 import { bookingService } from '../../services/api.js';
+import { useAuth } from '../../contexts/AuthContext.jsx';
 
 // Component con: Terms & Contact (Tái sử dụng cho cả 2 trang vé)
 const TicketFooter = () => (
@@ -30,6 +31,9 @@ const TicketFooter = () => (
 
 const FlightTicketPage = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const { user } = useAuth();
+  const isAdmin = location.state?.isAdmin || false;
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -38,7 +42,7 @@ const FlightTicketPage = () => {
     const fetchBooking = async () => {
       try {
         setLoading(true);
-        const bookingResponse = await bookingService.getById(id);
+        const bookingResponse = await (isAdmin ? bookingService.getByIdAdmin(id) : bookingService.getById(id));
         const bookingData = bookingResponse?.data || bookingResponse;
 
         if (!bookingData || Object.keys(bookingData).length === 0) {
@@ -81,7 +85,7 @@ const FlightTicketPage = () => {
     if (id) {
       fetchBooking();
     }
-  }, [id]);
+  }, [id, isAdmin]);
 
   const handleDownload = () => {
     // PDF download functionality can be added later using libraries like jsPDF
