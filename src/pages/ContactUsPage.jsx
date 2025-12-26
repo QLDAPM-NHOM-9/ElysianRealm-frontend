@@ -36,7 +36,7 @@ const ContactUsPage = () => {
     setIsLoading(true);
     try {
       const response = await axiosClient.post('/auth/contact', formData);
-      toast.success(response.data.message);
+      toast.success(response.message);
       setFormData({ name: '', email: '', message: '' });
     } catch (error) {
       console.error('Contact form error:', error);
