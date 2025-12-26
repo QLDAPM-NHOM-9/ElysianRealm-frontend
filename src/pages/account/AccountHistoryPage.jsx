@@ -7,9 +7,13 @@ import Spinner from '../../components/common/Spinner.jsx';
 import Button from '../../components/common/Button.jsx';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../contexts/AuthContext.jsx';
+import axiosClient from '../../services/axiosClient.js';
 
 // Component vé máy bay
-const FlightTicketCard = ({ data, onViewTicket }) => (
+const FlightTicketCard = ({ data, onViewTicket, onPaymentClick }) => {
+  const isPending = data.status === 'PENDING';
+
+  return (
   <div className="bg-bg-primary border border-border-primary rounded-lg p-4 flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
     <div className="flex items-center gap-4 w-full md:w-auto">
       <div className="w-12 h-12 rounded-full border border-border-primary flex items-center justify-center bg-white p-2">
@@ -47,20 +51,32 @@ const FlightTicketCard = ({ data, onViewTicket }) => (
           {data.status === 'PENDING' ? 'Chưa thanh toán' :
            data.status === 'CONFIRMED' ? 'Đã thanh toán' :
            data.status === 'COMPLETED' ? 'Hoàn thành' :
-           data.status === 'CANCELLED' ? 'Đã hủy' : 'Sắp tới'}
+           data.status === 'CANCELLED' ? 'Đã hủy' : 'Đã hoàn thành'}
         </p>
       </div>
-      <Button
-        variant="secondary"
-        className="font-medium py-2 px-4 shadow-none"
-        onClick={() => onViewTicket(`/flight-ticket/${data.id}`)}
-      >
-        <FiDownload />
-        <span className="hidden sm:inline">Vé điện tử</span>
-      </Button>
+      {isPending ? (
+        <Button
+          variant="primary"
+          className="font-medium py-2 px-4 shadow-none"
+          onClick={() => onPaymentClick(data)}
+        >
+          <span className="hidden sm:inline">Thanh toán VNPay</span>
+          <span className="sm:hidden">Thanh toán</span>
+        </Button>
+      ) : (
+        <Button
+          variant="secondary"
+          className="font-medium py-2 px-4 shadow-none"
+          onClick={() => onViewTicket(`/flight-ticket/${data.id}`)}
+        >
+          <FiDownload />
+          <span className="hidden sm:inline">Vé điện tử</span>
+        </Button>
+      )}
     </div>
   </div>
-);
+  );
+};
 
 // Component review modal
 const ReviewModal = ({ isOpen, onClose, booking, onSubmitReview }) => {
@@ -163,8 +179,9 @@ const ReviewModal = ({ isOpen, onClose, booking, onSubmitReview }) => {
 };
 
 // Component vé tour
-const TourBookingCard = ({ data, onReviewClick, hasReviewed, onViewTicket }) => {
+const TourBookingCard = ({ data, onReviewClick, hasReviewed, onViewTicket, onPaymentClick }) => {
   const canReview = (data.status === 'CONFIRMED' || data.status === 'COMPLETED') && !hasReviewed;
+  const isPending = data.status === 'PENDING';
 
   return (
     <div className="bg-bg-primary border border-border-primary rounded-lg p-4 flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
@@ -201,18 +218,29 @@ const TourBookingCard = ({ data, onReviewClick, hasReviewed, onViewTicket }) => 
             {data.status === 'PENDING' ? 'Chưa thanh toán' :
              data.status === 'CONFIRMED' ? 'Đã thanh toán' :
              data.status === 'COMPLETED' ? 'Hoàn thành' :
-             data.status === 'CANCELLED' ? 'Đã hủy' : 'Sắp tới'}
+             data.status === 'CANCELLED' ? 'Đã hủy' : 'Đã hoàn thành'}
           </p>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="secondary"
-            className="font-medium py-2 px-4 shadow-none"
-            onClick={() => onViewTicket(`/tour-ticket/${data.id}`)}
-          >
-            <FiDownload />
-            <span className="hidden sm:inline">Xem Vé</span>
-          </Button>
+          {isPending ? (
+            <Button
+              variant="primary"
+              className="font-medium py-2 px-4 shadow-none"
+              onClick={() => onPaymentClick(data)}
+            >
+              <span className="hidden sm:inline">Thanh toán VNPay</span>
+              <span className="sm:hidden">Thanh toán</span>
+            </Button>
+          ) : (
+            <Button
+              variant="secondary"
+              className="font-medium py-2 px-4 shadow-none"
+              onClick={() => onViewTicket(`/tour-ticket/${data.id}`)}
+            >
+              <FiDownload />
+              <span className="hidden sm:inline">Xem Vé</span>
+            </Button>
+          )}
           {hasReviewed ? (
             <Button
               variant="outline"
@@ -355,6 +383,31 @@ const AccountHistoryPage = () => {
     navigate(path);
   };
 
+  // Handler for payment functionality
+  const handlePaymentClick = async (booking) => {
+    try {
+      // Get total price from booking or calculate from details
+      const totalPrice = booking.totalPrice || 500; // Default fallback
+      const amountInVND = Math.round(totalPrice * 23000);
+
+      const response = await axiosClient.post('/payments/vnpay/create', {
+        bookingId: booking.id,
+        orderInfo: `Payment for booking ${booking.id}`,
+        amount: amountInVND
+      });
+
+      if (response && response.paymentUrl) {
+        window.location.href = response.paymentUrl;
+      } else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (error) {
+      console.error('VNPay payment error:', error);
+      const errorMessage = error?.response?.data?.message || error?.message || 'Không thể tạo liên kết thanh toán. Vui lòng thử lại.';
+      toast.error(`Lỗi thanh toán: ${errorMessage}`);
+    }
+  };
+
   // Handlers for review functionality
   const handleReviewClick = (booking) => {
     setReviewModal({ isOpen: true, booking });
@@ -435,7 +488,7 @@ const AccountHistoryPage = () => {
           {filteredBookings.length > 0 ? (
             filteredBookings.map((booking) =>
               activeTab === 'flights' ? (
-                <FlightTicketCard key={booking.id} data={booking} onViewTicket={handleViewTicket} />
+                <FlightTicketCard key={booking.id} data={booking} onViewTicket={handleViewTicket} onPaymentClick={handlePaymentClick} />
               ) : (
                 <TourBookingCard
                   key={booking.id}
@@ -443,6 +496,7 @@ const AccountHistoryPage = () => {
                   onReviewClick={handleReviewClick}
                   hasReviewed={reviewedTours.has(booking.itemId)}
                   onViewTicket={handleViewTicket}
+                  onPaymentClick={handlePaymentClick}
                 />
               )
             )
