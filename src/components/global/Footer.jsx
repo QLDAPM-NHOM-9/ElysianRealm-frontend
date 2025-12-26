@@ -43,7 +43,7 @@ const Footer = () => {
     { label: 'Đà Lạt', path: '/tour-listing?q=Đà Lạt' }
   ];
   const services = [
-    { label: 'Đặt vé máy bay', path: '/flights' },
+    { label: 'Đặt vé máy bay', path: '/flight-listing' },
     { label: 'Đặt tour du lịch', path: '/tour-listing' }
   ];
 

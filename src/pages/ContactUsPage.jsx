@@ -40,7 +40,21 @@ const ContactUsPage = () => {
       setFormData({ name: '', email: '', message: '' });
     } catch (error) {
       console.error('Contact form error:', error);
-      const errorMessage = error.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại.';
+
+      // Handle different types of errors
+      let errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại.';
+
+      if (error.response) {
+        // Server responded with error status
+        errorMessage = error.response.data?.message || `Lỗi ${error.response.status}: ${error.response.statusText}`;
+      } else if (error.request) {
+        // Network error
+        errorMessage = 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối internet.';
+      } else {
+        // Other error
+        errorMessage = error.message || 'Đã xảy ra lỗi không xác định.';
+      }
+
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
